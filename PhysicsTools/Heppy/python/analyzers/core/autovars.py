@@ -7,10 +7,6 @@
 # TODO: more documentation needed here!
 
 class NTupleVariable:
-    """Branch containing an individual variable (either of the event or of an object), created with a name and a function to compute it
-       - name, type, help, default: obvious 
-       - function: a function that taken an object computes the value to fill (e.g. lambda event : len(event.goodVertices))
-    """
     def __init__(self, name, function, type=float, help="", default=-99, mcOnly=False, filler=None):
         self.name = name
         self.function = function
@@ -31,40 +27,15 @@ class NTupleVariable:
     def __repr__(self):
         return "<NTupleVariable[%s]>" % self.name
 
-
 class NTupleObjectType:
-    """Type defining a collection of variables associated to a single object. Contans NTupleVariable and NTupleSubObject"""
     def __init__(self,name,baseObjectTypes=[],mcOnly=[],variables=[]):
         self.name = name
         self.baseObjectTypes = baseObjectTypes
         self.mcOnly = mcOnly
-        self.variables = []
-        self.subObjects = []
-        for v in variables:
-           if issubclass(v.__class__,NTupleSubObject):
-                self.subObjects.append(v)
-           else:
-                self.variables.append(v)
-        self._subObjectVars = {}
+        self.variables = variables
     def ownVars(self,isMC):
         """Return only my vars, not including the ones from the bases"""
-        vars = [ v for v in self.variables if (isMC or not v.mcOnly) ]
-        if self.subObjects:
-            if isMC not in self._subObjectVars:
-                subvars = []
-                for so in self.subObjects:
-                    if so.mcOnly and not isMC: continue
-                    for subvar in so.objectType.allVars(isMC):
-                        subvars.append(NTupleVariable(so.name+"_"+subvar.name,
-                                  #DebugComposer(so,subvar),#lambda object : subvar(so(object)),
-                                  lambda object, subvar=subvar, so=so : subvar(so(object)), 
-                                  # ^-- lambda object : subvar(so(object)) doesn't work due to scoping, see
-                                  #     http://stackoverflow.com/questions/2295290/what-do-lambda-function-closures-capture-in-python/2295372#2295372
-                                  type = subvar.type, help = subvar.help, default = subvar.default, mcOnly = subvar.mcOnly,
-                                  filler = subvar.filler))
-                self._subObjectVars[isMC] = subvars
-            vars += self._subObjectVars[isMC]
-        return vars
+        return [ v for v in self.variables if (isMC or not v.mcOnly) ]
     def allVars(self,isMC):
         """Return all vars, including the base ones. Duplicate bases are not added twice"""
         ret = []; names = {}
@@ -94,21 +65,7 @@ class NTupleObjectType:
     def __repr__(self):
         return "<NTupleObjectType[%s]>" % self.name
 
-
-
-
-class NTupleSubObject:
-    """Type to add a sub-object within an NTupleObjectType, given a name (used as prefix), a function to extract the sub-object and NTupleObjectType to define tye type"""
-    def __init__(self,name,function,objectType,mcOnly=False):
-        self.name = name
-        self.function = function
-        self.objectType = objectType
-        self.mcOnly = mcOnly
-    def __call__(self,object):
-        return self.function(object)
-
 class NTupleObject:
-    """Type defining a set of branches associated to a single object (i.e. an instance of NTupleObjectType)"""
     def __init__(self, name, objectType, help="", mcOnly=False):
         self.name = name
         self.objectType = objectType
@@ -129,16 +86,42 @@ class NTupleObject:
     def __repr__(self):
         return "<NTupleObject[%s]>" % self.name
 
+    def get_py_wrapper_class(self, isMC):
+        s = "class %s:\n" % self.name
+        s += "    \"\"\"\n"
+        s += "    {0}\n".format(self.help)
+        s += "    \"\"\"\n"
+
+        s += "    @staticmethod\n"
+        s += "    def make_obj(tree):\n"
+        vs = []
+        helps = []
+        for v in self.objectType.allVars(isMC):
+            if len(v.name)>0:
+                s += "        _{1} = getattr(tree, \"{0}_{1}\", None)\n".format(self.name, v.name)
+                vs += [v.name]
+                helps += [v.help]
+            else:
+                s += "        _{0} = getattr(tree, \"{0}\", None);\n".format(self.name)
+                vs += [self.name]
+                helps += [self.help]
+        vecstring = ", ".join(["_{0}".format(v) for v in vs])
+
+        s += "        return {0}({1})\n".format(self.name, vecstring)
+
+        s += "    def __init__(self, {0}):\n".format(",".join(vs))
+        for v, h in zip(vs, helps):
+            s += "        self.{0} = {0} #{1}\n".format(v, h)
+        return s
 
 class NTupleCollection:
-    """Type defining a set of branches associated to a list of objects (i.e. an instance of NTupleObjectType)"""
     def __init__(self, name, objectType, maxlen, help="", mcOnly=False, sortAscendingBy=None, sortDescendingBy=None, filter=None):
         self.name = name
         self.objectType = objectType
         self.maxlen = maxlen
         self.help = help
         if objectType.mcOnly and mcOnly == False: 
-            #print "collection %s is set to mcOnly since the type %s is mcOnly" % (name, objectType.name)
+            print "collection %s is set to mcOnly since the type %s is mcOnly" % (name, objectType.name)
             mcOnly = True
         self.mcOnly = mcOnly
         if sortAscendingBy != None and sortDescendingBy != None:
@@ -206,16 +189,31 @@ class NTupleCollection:
 
     def get_py_wrapper_class(self, isMC):
         s = "class %s:\n" % self.name
-        s += "    def __init__(self, tree, n):\n"
-        for v in self.objectType.allVars(isMC):
-            if len(v.name)>0:
-                s += "        self.{0} = tree.{1}_{2}[n];\n".format(v.name, self.name, v.name)
-            else:
-                s += "        self.{0} = tree.{0}[n];\n".format(self.name)
+        s += "    \"\"\"\n"
+        s += "    {0}\n".format(self.help)
+        s += "    \"\"\"\n"
 
         s += "    @staticmethod\n"
-        s += "    def make_array(event):\n"
-        s += "        return [{0}(event.input, i) for i in range(event.input.n{0})]\n".format(self.name)
+        s += "    def make_array(tree):\n"
+        s += "        n = getattr(tree, \"n{0}\", 0)\n".format(self.name)
+        vs = []
+        helps = []
+        for v in self.objectType.allVars(isMC):
+            if len(v.name)>0:
+                s += "        _{1} = getattr(tree, \"{0}_{1}\", [None]*n)\n".format(self.name, v.name)
+                vs += [v.name]
+                helps += [v.help]
+            else:
+                s += "        _{0} = getattr(tree, \"{0}\", [None]*n);\n".format(self.name)
+                vs += [self.name]
+                helps += [self.help]
+        vecstring = ", ".join(["_{0}[n]".format(v) for v in vs])
+
+        s += "        return [{0}({1}) for n in range(n)]\n".format(self.name, vecstring)
+
+        s += "    def __init__(self, {0}):\n".format(",".join(vs))
+        for h, v in zip(helps, vs):
+            s += "        self.{0} = {0} #{1}\n".format(v, h)
         return s
 
 
