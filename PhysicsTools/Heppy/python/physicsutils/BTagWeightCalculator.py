@@ -2,22 +2,35 @@ import ROOT
 import numpy as np
 
 class BTagWeightCalculator:
-    def __init__(self, fn_hf, fn_lf) :
+    def __init__(self, fn_hf, fn_lf, btag_name="pfCombinedInclusiveSecondaryVertexV2BJetTags") :
         self.pdfs = {}
+        
+        self.debug = True
 
+        #heavy-flavour bins
         self.pt_bins_hf = np.array([20, 30, 40, 60, 100, 160, 10000])
         self.eta_bins_hf = np.array([0, 2.41])
-
+        
+        #light-flavour bins
         self.pt_bins_lf = np.array([20, 30, 40, 60, 10000])
         self.eta_bins_lf = np.array([0, 0.8, 1.6, 2.41])
-
-        self.btag = "pfCombinedInclusiveSecondaryVertexV2BJetTags"
+        if self.debug:
+            print "[BTagWeightCalculator] HF pt bins", self.pt_bins_hf
+            print "[BTagWeightCalculator] HF eta bins", self.eta_bins_hf
+            print "[BTagWeightCalculator] LF pt bins", self.pt_bins_lf
+            print "[BTagWeightCalculator] LF eta bins", self.eta_bins_lf
+        
+        self.btag = btag_name
         self.init(fn_hf, fn_lf)
 
     def getBin(self, bvec, val):
         return int(bvec.searchsorted(val) - 1)
 
-    def init(self, fn_hf, fn_lf) :
+    def init(self, fn_hf, fn_lf):
+        """
+        fn_hf: filename with heavy-flavour scale factors 
+        fn_lf: filename with light-flavour scale factors 
+        """
         print "[BTagWeightCalculator]: Initializing from files", fn_hf, fn_lf
 
         self.pdfs["hf"] = self.getHistosFromFile(fn_hf)
@@ -50,6 +63,7 @@ class BTagWeightCalculator:
                     syst = spl[5]
                 else:
                     syst = "nominal"
+            #print kn, ptbin, etabin, kind, syst 
             ret[(ptbin, etabin, kind, syst)] = k.ReadObj().Clone()
         return ret
 
@@ -84,7 +98,8 @@ class BTagWeightCalculator:
 
         if csvbin <= 0 or csvbin > h.GetNbinsX():
             return 1.0
-
+        if self.debug:
+            print "[BTagWeightCalculator]", pt, aeta, csv, fl, k, w
         w = h.GetBinContent(csvbin)
         return w
 
