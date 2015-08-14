@@ -4,8 +4,9 @@ import numpy as np
 class BTagWeightCalculator:
     def __init__(self, fn_hf, fn_lf, btag_name="pfCombinedInclusiveSecondaryVertexV2BJetTags") :
         self.pdfs = {}
-        
-        self.debug = True
+       
+        #Set to True for debugging printout
+        self.debug = False
 
         #heavy-flavour bins
         self.pt_bins_hf = np.array([20, 30, 40, 60, 100, 160, 10000])
@@ -82,6 +83,10 @@ class BTagWeightCalculator:
             etabin = self.getBin(self.eta_bins_lf, aeta)
 
         if ptbin < 0 or etabin < 0:
+            if self.debug:
+                print "[BTagWeightCalculator] pt={0} ptbin={1} eta={2} etabin={3}, w=1".format(
+                    pt, ptbin, aeta, etabin
+                )
             return 1.0
 
         k = (ptbin, etabin, kind, systematic)
@@ -90,6 +95,10 @@ class BTagWeightCalculator:
             hdict = self.pdfs["hf"]
         h = hdict.get(k, None)
         if not h:
+            if self.debug:
+                print "[BTagWeightCalculator] key={0}, not found w=1".format(
+                    k
+                )
             return 1.0
 
         csvbin = 1
@@ -97,10 +106,14 @@ class BTagWeightCalculator:
             csvbin = h.FindBin(csv)
 
         if csvbin <= 0 or csvbin > h.GetNbinsX():
+            if self.debug:
+                print "[BTagWeightCalculator] csv={0} bin={1} out of bounds, w=1".format(
+                    csv, csvbin
+                )
             return 1.0
+        w = h.GetBinContent(csvbin)
         if self.debug:
             print "[BTagWeightCalculator]", pt, aeta, csv, fl, k, w
-        w = h.GetBinContent(csvbin)
         return w
 
     def calcEventWeight(self, jets, kind, systematic):
@@ -108,6 +121,7 @@ class BTagWeightCalculator:
             [self.calcJetWeight(jet, kind, systematic)
             for jet in jets]
         )
+        print "[BTagWeightCalculator] weights={0}".format(weights)
 
         wtot = np.prod(weights)
         return wtot
