@@ -193,16 +193,18 @@ class AutoFillTreeProducer( TreeAnalyzerNumpy ):
         anclass += "        super(EventAnalyzer, self).__init__(cfg_ana, cfg_comp, looperName)\n"
 
         anclass += "    def process(self, event):\n"
-
         for cname, coll in self.collections.items():
+            print "collections", cname, coll
             classes += coll.get_py_wrapper_class(isMC)
             anclass += "        event.{0} = {0}.make_array(event.input)\n".format(coll.name)
 
         for cname, coll in self.globalObjects.items():
+            print "globalObjects", cname, coll
             classes += coll.get_py_wrapper_class(isMC)
             anclass += "        event.{0} = {0}.make_obj(event.input)\n".format(coll.name)
 
         for v in self.globalVariables:
+            print "globalVariables", v
             anclass += "        event.{0} = getattr(event.input, \"{0}\", None)\n".format(v.name)
         
         return classes + "\n" + anclass
