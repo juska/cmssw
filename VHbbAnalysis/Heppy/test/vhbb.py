@@ -207,7 +207,7 @@ JetAna.doQG=True
 JetAna.QGpath="pdfQG_AK4chs_antib_13TeV_v1.root"
 JetAna.recalibrateJets=True
 JetAna.jecPath="jec"
-JetAna.mcGT="PHYS14_V4_MC"
+JetAna.mcGT="MCRUN2_74_V9D"
 
 VHbb = cfg.Analyzer(
     verbose=False,
