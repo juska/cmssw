@@ -207,7 +207,7 @@ JetAna.doQG=True
 JetAna.QGpath="pdfQG_AK4chs_antib_13TeV_v1.root"
 JetAna.recalibrateJets=True
 JetAna.jecPath="jec"
-JetAna.mcGT="PHYS14_V4_MC"
+JetAna.mcGT="MCRUN2_74_V9D"
 
 VHbb = cfg.Analyzer(
     verbose=False,
@@ -296,7 +296,7 @@ sample = cfg.MCComponent(
      #"root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root"
 #     "root://xrootd.unl.edu//store/mc/Phys14DR/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v2/00000/FC4E6E16-5C7F-E411-8843-002590200AE4.root"
 #     "/scratch/arizzi/0E132828-B218-E511-9983-3417EBE6453D.root"
-    "root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TT_TuneZ2star_13TeV-powheg-pythia6-tauola/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/007182DA-2313-E511-A743-0025907FD242.root"
+    "file:///home/joosep/tth/spring15/sync/ttHTobb_M125_13TeV_powheg_pythia8__Asympt25ns_MCRUN2_74_V9-v1/block_1.root"
 ],
 
     #files = ["226BB247-A565-E411-91CF-00266CFF0AF4.root"],
@@ -324,7 +324,7 @@ class TestFilter(logging.Filter):
 # and the following runs the process directly 
 if __name__ == '__main__':
     from PhysicsTools.HeppyCore.framework.looper import Looper 
-    looper = Looper( 'Loop', config, nPrint = 1, nEvents = 1000)
+    looper = Looper( 'Loop', config, nPrint = 1, nEvents = 100)
 
     import time
     import cProfile
