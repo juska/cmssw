@@ -57,11 +57,11 @@ export ROOT_INCLUDE_PATH=.:./src:$ROOT_INCLUDE_PATH
 
 # Move JEC files into place
 mkdir jec
-mv PHYS14_V4_MC_L1FastJet_AK4PFchs.txt jec/
-mv PHYS14_V4_MC_L2Relative_AK4PFchs.txt jec/
-mv PHYS14_V4_MC_L3Absolute_AK4PFchs.txt jec/
-mv Uncertainty_FAKE.txt jec/
-
+mv MCRUN2_74_V9D_L1FastJet_AK4PFchs.txt jec/
+mv MCRUN2_74_V9D_L2L3Residual_AK4PFchs.txt jec/
+mv MCRUN2_74_V9D_L2Relative_AK4PFchs.txt jec/
+mv MCRUN2_74_V9D_L3Absolute_AK4PFchs.txt jec/
+mv MCRUN2_74_V9D_Uncertainty_AK4PFchs.txt jec/
 mkdir csv
 mv csv*root csv/
 
