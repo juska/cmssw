@@ -92,6 +92,11 @@ class BTagWeightCalculator:
         if not h:
             return 1.0
 
+        #Remember to set CSV to 1.0 for cases where CSV > 1.0.
+        #https://twiki.cern.ch/twiki/bin/view/CMS/TTbarHbbRun2ReferenceAnalysis#Event_Selection
+        if csv>=1:
+            csv = 1
+        
         csvbin = 1
         if csv>=0:
             csvbin = h.FindBin(csv)
