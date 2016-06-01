@@ -70,27 +70,10 @@ def initialize(**kwargs):
     ########################################
     # Boosted Substructure
     ########################################
-    
-    # Use the trivial selector to convert patMuons into reco::Muons for removal
-    process.selectedMuonsTmp = cms.EDProducer("MuonRemovalForBoostProducer", 
-                                                  src = cms.InputTag("slimmedMuons"),
-                                                  vtx = cms.InputTag("offlineSlimmedPrimaryVertices"))
-    process.selectedMuons = cms.EDFilter("CandPtrSelector", 
-                                             src = cms.InputTag("selectedMuonsTmp"), 
-                                             cut = cms.string("1"))
 
-    # Use the trivial selector to convert patElectrons into reco::Electrons for removal
-    process.selectedElectronsTmp = cms.EDProducer("ElectronRemovalForBoostProducer", 
-                                                  src = cms.InputTag("slimmedElectrons"),
-                                                  rho = cms.InputTag("fixedGridRhoFastjetAll"))
-    process.selectedElectrons = cms.EDFilter("CandPtrSelector", 
-                                             src = cms.InputTag("selectedElectronsTmp"), 
-                                             cut = cms.string("1"))
 
-    # Remove electrons and muons from CHS
-    process.chsTmp1 = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))  
-    process.chsTmp2 =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("chsTmp1"), veto = cms.InputTag("selectedMuons"))
-    process.chs = cms.EDProducer("CandPtrProjector", src = cms.InputTag("chsTmp2"), veto = cms.InputTag("selectedElectrons"))
+    # Select candidates that would pass CHS requirements
+    process.chs = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))
 
     if isMC:
         process.OUT.outputCommands.append("keep *_slimmedJetsAK8_*_PAT")
@@ -131,7 +114,7 @@ def initialize(**kwargs):
             zcut = cms.double(0.1),
             rcut_factor = cms.double(0.5),
             useExplicitGhosts = cms.bool(True),
-            writeCompound = cms.bool(True), # Also write subjets
+            writeCompound = cms.bool(True), # Also write subjets for pruned fj
             jetCollInstanceName=cms.string("SubJets"),
         )
 
@@ -141,10 +124,7 @@ def initialize(**kwargs):
             zcut = cms.double(0.1),
             beta = cms.double(0.0),
             R0 = cms.double(1.5),
-            useExplicitGhosts = cms.bool(True), 
-            writeCompound = cms.bool(True), # Also write subjets
-            jetCollInstanceName=cms.string("SubJets"),            
-        )
+            useExplicitGhosts = cms.bool(True))
 
         # Apply softdrop z=0.2, beta=1 to CA R=1.5 jets
         process.ca15PFSoftdropZ2B1JetsCHS = process.ca15PFJetsCHS.clone(
@@ -152,10 +132,7 @@ def initialize(**kwargs):
             zcut = cms.double(0.2),
             beta = cms.double(1.),
             R0 = cms.double(1.5),
-            useExplicitGhosts = cms.bool(True),
-            writeCompound = cms.bool(True), # Also write subjets
-            jetCollInstanceName=cms.string("SubJets"),            
-        )
+            useExplicitGhosts = cms.bool(True))
 
         # Apply trimming to CA R=1.5 jets
         process.ca15PFTrimmedJetsCHS = process.ca15PFJetsCHS.clone(
@@ -163,27 +140,6 @@ def initialize(**kwargs):
             rFilt = cms.double(0.2),
             trimPtFracMin = cms.double(0.06),
             useExplicitGhosts = cms.bool(True))
-
-        # Apply BDRS (via SubjetFilterJetProducer)
-        process.ca15PFSubjetFilterCHS = cms.EDProducer(
-            "SubjetFilterJetProducer",
-            PFJetParameters.clone(
-                src           = cms.InputTag("chs"),
-                doAreaFastjet = cms.bool(True),
-                doRhoFastjet  = cms.bool(False),
-                jetPtMin      = cms.double(200.0)
-            ),
-            AnomalousCellParameters,
-            jetAlgorithm      = cms.string("CambridgeAachen"),
-            nFatMax           = cms.uint32(0),
-            rParam            = cms.double(1.5),
-            rFilt             = cms.double(0.3),
-            massDropCut       = cms.double(0.67),
-            asymmCut          = cms.double(0.3),
-            asymmCutLater     = cms.bool(True)   
-        )
-
-                        
 
         # Calculate tau1, tau2 and tau3 for softdrop (z=0.2, beta=1) CA R=1.5 jets
         process.ca15PFSoftdropZ2B1JetsCHSNSubjettiness  = cms.EDProducer("NjettinessAdder",
@@ -232,7 +188,6 @@ def initialize(**kwargs):
         process.OUT.outputCommands.append("keep *_ca15PFSoftdropJetsCHS_*_EX")
         process.OUT.outputCommands.append("keep *_ca15PFSoftdropZ2B1JetsCHS_*_EX")
         process.OUT.outputCommands.append("keep *_ca15PFTrimmedJetsCHS_*_EX")
-        process.OUT.outputCommands.append("keep *_ca15PFSubjetFilterCHS_*_EX")
         process.OUT.outputCommands.append("keep *_ca15PFJetsCHSNSubjettiness_*_EX")
         process.OUT.outputCommands.append("keep *_ca15PFSoftdropZ2B1JetsCHSNSubjettiness_*_EX")
         process.OUT.outputCommands.append("keep *_looseOptRHTT_*_EX")
@@ -367,33 +322,18 @@ def initialize(**kwargs):
     # Subjet b-tagging
     ########################################
 
-    for fatjet_name in ["ca15PFPrunedJetsCHS", 
-                        "ca15PFSoftdropJetsCHS", 
-                        "ca15PFSoftdropZ2B1JetsCHS",                     
-                        "ca15PFSubjetFilterCHS",
-                        "looseOptRHTT"]:
 
-        if skip_ca15:
+    for fatjet_name in ["ca15PFPrunedJetsCHS", "looseOptRHTT"]:
+
+        if skip_ca15 and (fatjet_name in ["ca15PFPrunedJetsCHS", "looseOptRHTT"]):
             continue
-            
-        if fatjet_name in  ["ca15PFPrunedJetsCHS", "ca15PFSoftdropJetsCHS", "ca15PFSoftdropZ2B1JetsCHS"]:
+
+        if fatjet_name == "ca15PFPrunedJetsCHS":
             delta_r = 1.5
             jetAlgo = "CambridgeAachen"
-            subjet_label = "SubJets"
-            fatjet_label = ""
-            initial_jet = "ca15PFJetsCHS"
-        elif fatjet_name == "ca15PFSubjetFilterCHS":
-            delta_r = 1.5
-            jetAlgo = "CambridgeAachen"            
-            subjet_label = "filter"
-            fatjet_label = "filtercomp"
-            initial_jet = "ca15PFJetsCHS"
         elif fatjet_name == "looseOptRHTT":
             delta_r = 1.5
             jetAlgo = "CambridgeAachen"
-            subjet_label = "SubJets"
-            fatjet_label = ""
-            initial_jet = "ca15PFJetsCHS"
         else:
             print "Invalid fatjet for subjet b-tagging: ", fatjet_name
             sys.exit()
@@ -414,7 +354,7 @@ def initialize(**kwargs):
                     computeProbabilities = cms.bool(False),
                     computeGhostTrack = cms.bool(False),
                     maxDeltaR = cms.double(delta_r),
-                    jets = cms.InputTag(fatjet_name, subjet_label),
+                    jets = cms.InputTag(fatjet_name, "SubJets"),
                 ))
         getattr(process, impact_info_name).explicitJTA = cms.bool(True)
 
@@ -425,15 +365,14 @@ def initialize(**kwargs):
                    extSVCollection               = cms.InputTag('slimmedSecondaryVertices'),
                    trackIPTagInfos               = cms.InputTag(impact_info_name),                
                 ))
-
         getattr(process, isv_info_name).useSVClustering = cms.bool(True)
         getattr(process, isv_info_name).rParam = cms.double(delta_r)
         getattr(process, isv_info_name).extSVDeltaRToJet = cms.double(delta_r)
         getattr(process, isv_info_name).trackSelection.jetDeltaRMax = cms.double(delta_r)
         getattr(process, isv_info_name).vertexCuts.maxDeltaRToJetAxis = cms.double(delta_r)
         getattr(process, isv_info_name).jetAlgorithm = cms.string(jetAlgo)
-        getattr(process, isv_info_name).fatJets  =  cms.InputTag(initial_jet)
-        getattr(process, isv_info_name).groomedFatJets  =  cms.InputTag(fatjet_name, fatjet_label)
+        getattr(process, isv_info_name).fatJets  =  cms.InputTag(fatjet_name.replace("looseOptRHTT","ca15PFJetsCHS"))
+        getattr(process, isv_info_name).groomedFatJets  =  cms.InputTag(fatjet_name)
 
         # CSV V2 COMPUTER
         setattr(process,

@@ -3,14 +3,10 @@ import os, types
 from math import *
 from PhysicsTools.HeppyCore.utils.deltar import *
 
-
-
 class JetReCalibrator:
-
     def __init__(self,globalTag,jetFlavour,doResidualJECs,jecPath,upToLevel=3,
                  calculateSeparateCorrections=False,
-                 calculateType1METCorrection=False, type1METParams={'jetPtThreshold':15., 'skipEMfractionThreshold':0.9, 'skipMuons':True}, skipLevel1=False):
-
+                 calculateType1METCorrection=False, type1METParams={'jetPtThreshold':15., 'skipEMfractionThreshold':0.9, 'skipMuons':True} ):
         """Create a corrector object that reads the payloads from the text dumps of a global tag under
             CMGTools/RootTools/data/jec  (see the getJec.py there to make the dumps).
            It will apply the L1,L2,L3 and possibly the residual corrections to the jets.
@@ -28,15 +24,13 @@ class JetReCalibrator:
         self.L2JetPar  = ROOT.JetCorrectorParameters("%s/%s_L2Relative_%s.txt" % (path,globalTag,jetFlavour),"");
         self.L3JetPar  = ROOT.JetCorrectorParameters("%s/%s_L3Absolute_%s.txt" % (path,globalTag,jetFlavour),"");
         self.vPar = ROOT.vector(ROOT.JetCorrectorParameters)()
- 
-        if not skipLevel1: self.vPar.push_back(self.L1JetPar);
+        self.vPar.push_back(self.L1JetPar);
         if upToLevel >= 2: self.vPar.push_back(self.L2JetPar);
         if upToLevel >= 3: self.vPar.push_back(self.L3JetPar);
         # Add residuals if needed
         if doResidualJECs : 
             self.ResJetPar = ROOT.JetCorrectorParameters("%s/%s_L2L3Residual_%s.txt" % (path,globalTag,jetFlavour))
             self.vPar.push_back(self.ResJetPar);
-                    
         #Step3 (Construct a FactorizedJetCorrector object) 
         self.JetCorrector = ROOT.FactorizedJetCorrector(self.vPar)
         if os.path.exists("%s/%s_Uncertainty_%s.txt" % (path,globalTag,jetFlavour)):
@@ -47,74 +41,40 @@ class JetReCalibrator:
             print 'Missing JEC uncertainty file "%s/%s_Uncertainty_%s.txt", so jet energy uncertainties will not be available' % (path,globalTag,jetFlavour)
             self.JetUncertainty = None
         self.separateJetCorrectors = {}
-
         if calculateSeparateCorrections or calculateType1METCorrection:
-            # Start from level 1
-            if not skipLevel1:
-                self.vParL1 = ROOT.vector(ROOT.JetCorrectorParameters)()
-                self.vParL1.push_back(self.L1JetPar)
-                self.separateJetCorrectors["L1"] = ROOT.FactorizedJetCorrector(self.vParL1)
-                if upToLevel >= 2 and calculateSeparateCorrections:
-                    self.vParL2 = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L1JetPar,self.L2JetPar]: self.vParL2.push_back(i)
-                    self.separateJetCorrectors["L1L2"] = ROOT.FactorizedJetCorrector(self.vParL2)
-                if upToLevel >= 3 and calculateSeparateCorrections:
-                    self.vParL3 = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L1JetPar,self.L2JetPar,self.L3JetPar]: self.vParL3.push_back(i)
-                    self.separateJetCorrectors["L1L2L3"] = ROOT.FactorizedJetCorrector(self.vParL3)
-                if doResidualJECs and calculateSeparateCorrections:
-                    self.vParL3Res = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L1JetPar,self.L2JetPar,self.L3JetPar,self.ResJetPar]: self.vParL3Res.push_back(i)
-                    self.separateJetCorrectors["L1L2L3Res"] = ROOT.FactorizedJetCorrector(self.vParL3Res)
-            # Do NOT start from level 1
-            else:
-                if upToLevel >= 2 and calculateSeparateCorrections:
-                    self.vParL2 = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L2JetPar]: self.vParL2.push_back(i)
-                    self.separateJetCorrectors["L2"] = ROOT.FactorizedJetCorrector(self.vParL2)
-                if upToLevel >= 3 and calculateSeparateCorrections:
-                    self.vParL3 = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L2JetPar,self.L3JetPar]: self.vParL3.push_back(i)
-                    self.separateJetCorrectors["L2L3"] = ROOT.FactorizedJetCorrector(self.vParL3)
-                if doResidualJECs and calculateSeparateCorrections:
-                    self.vParL3Res = ROOT.vector(ROOT.JetCorrectorParameters)()
-                    for i in [self.L2JetPar,self.L3JetPar,self.ResJetPar]: self.vParL3Res.push_back(i)
-                    self.separateJetCorrectors["L2L3Res"] = ROOT.FactorizedJetCorrector(self.vParL3Res)
+            self.vParL1 = ROOT.vector(ROOT.JetCorrectorParameters)()
+            self.vParL1.push_back(self.L1JetPar)
+            self.separateJetCorrectors["L1"] = ROOT.FactorizedJetCorrector(self.vParL1)
+            if upToLevel >= 2 and calculateSeparateCorrections:
+                self.vParL2 = ROOT.vector(ROOT.JetCorrectorParameters)()
+                for i in [self.L1JetPar,self.L2JetPar]: self.vParL2.push_back(i)
+                self.separateJetCorrectors["L1L2"] = ROOT.FactorizedJetCorrector(self.vParL2)
+            if upToLevel >= 3 and calculateSeparateCorrections:
+                self.vParL3 = ROOT.vector(ROOT.JetCorrectorParameters)()
+                for i in [self.L1JetPar,self.L2JetPar,self.L3JetPar]: self.vParL3.push_back(i)
+                self.separateJetCorrectors["L1L2L3"] = ROOT.FactorizedJetCorrector(self.vParL3)
+            if doResidualJECs and calculateSeparateCorrections:
+                self.vParL3Res = ROOT.vector(ROOT.JetCorrectorParameters)()
+                for i in [self.L1JetPar,self.L2JetPar,self.L3JetPar,self.ResJetPar]: self.vParL3Res.push_back(i)
+                self.separateJetCorrectors["L1L2L3Res"] = ROOT.FactorizedJetCorrector(self.vParL3Res)
 
-    def getCorrection(self,jet,rho,delta=0,metShift=[0,0],corrector=None,isHttSubjet=False):
-        """Calculates the correction factor of a jet without modifying it
-        """
+    def getCorrection(self,jet,rho,delta=0,corrector=None):
         if not corrector: corrector = self.JetCorrector
-        if corrector != self.JetCorrector and delta!=0: raise RuntimeError, 'Configuration not supported'
+        if corrector != self.JetCorrector and delta!=0: raise RuntimeError('Configuration not supported')
         corrector.setJetEta(jet.eta())
-
-        # HTT Subjets are uncalibrated and have no rawFactor attacted
-        if isHttSubjet:
-            corrector.setJetPt(jet.pt())
-        else:
-            corrector.setJetPt(jet.pt() * jet.rawFactor())
-
+        corrector.setJetPt(jet.pt()*jet.rawFactor())
         corrector.setJetA(jet.jetArea())
         corrector.setRho(rho)
         corr = corrector.getCorrection()
-
         if delta != 0:
-            if not self.JetUncertainty: raise RuntimeError, "Jet energy scale uncertainty shifts requested, but not available"
+            if not self.JetUncertainty: raise RuntimeError("Jet energy scale uncertainty shifts requested, but not available")
             self.JetUncertainty.setJetEta(jet.eta())
             self.JetUncertainty.setJetPt(corr * jet.pt() * jet.rawFactor())
             try:
                 jet.jetEnergyCorrUncertainty = self.JetUncertainty.getUncertainty(True) 
-            except RuntimeError, r:
+            except RuntimeError as r:
                 print "Caught %s when getting uncertainty for jet of pt %.1f, eta %.2f\n" % (r,corr * jet.pt() * jet.rawFactor(),jet.eta())
                 jet.jetEnergyCorrUncertainty = 0.5
-
-        # Do not calculate metShift for HTT subjets
-        if not isHttSubjet:
-            if jet.photonEnergyFraction() < 0.9 and jet.pt()*corr*jet.rawFactor() > 10:
-                metShift[0] -= jet.px()*(corr*jet.rawFactor() - 1)*(1-jet.muonEnergyFraction())
-                metShift[1] -= jet.py()*(corr*jet.rawFactor() - 1)*(1-jet.muonEnergyFraction()) 
-        if delta != 0:
-
             #print "   jet with corr pt %6.2f has an uncertainty %.2f " % (jet.pt()*jet.rawFactor()*corr, jet.jetEnergyCorrUncertainty)
             corr *= max(0, 1+delta*jet.jetEnergyCorrUncertainty)
         return corr
@@ -181,8 +141,8 @@ class JetReCalibrator:
     def correctAll(self,jets,rho,delta=0, addCorr=False, addShifts=False, metShift=[0.,0.], type1METCorr=[0.,0.,0.]):
         """Applies 'correct' to all the jets, discard the ones that have bad corrections (corrected pt <= 0)"""
         badJets = []
-        if metShift     != [0.,0.   ]: raise RuntimeError, "input metShift tuple is not initialized to zeros"
-        if type1METCorr != [0.,0.,0.]: raise RuntimeError, "input type1METCorr tuple is not initialized to zeros"
+        if metShift     != [0.,0.   ]: raise RuntimeError("input metShift tuple is not initialized to zeros")
+        if type1METCorr != [0.,0.,0.]: raise RuntimeError("input type1METCorr tuple is not initialized to zeros")
         for j in jets:
             ok = self.correct(j,rho,delta,addCorr=addCorr,addShifts=addShifts,metShift=metShift,type1METCorr=type1METCorr)
             if not ok: badJets.append(j)

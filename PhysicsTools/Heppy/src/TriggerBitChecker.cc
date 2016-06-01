@@ -1,6 +1,8 @@
 #include "PhysicsTools/Heppy/interface/TriggerBitChecker.h"
 
 #include "FWCore/Common/interface/TriggerNames.h"
+#include <assert.h>
+#include <iostream>
 
 namespace heppy {
 
@@ -37,6 +39,21 @@ bool TriggerBitChecker::check_unprescaled(const edm::EventBase &event, const edm
     }
     return outcome; // true only if all paths are unprescaled
 }
+
+int TriggerBitChecker::getprescale(const edm::EventBase &event, const edm::TriggerResults &result_tr, const pat::PackedTriggerPrescales &result) const {
+    if (result_tr.parameterSetID() != lastID_) { syncIndices(event, result_tr); lastID_ = result_tr.parameterSetID(); }
+        if (indices_.size() == 0 ){
+	  //            std::cout << " trying to check an inexistent trigger" << std::endl;
+            return  -999;
+        }
+        if (indices_.size() > 1 ){
+            std::cout << " trying to get prescale for multiple trigger objects at the same time" << std::endl;
+            assert(0);
+        }
+
+    return result.getPrescaleForIndex(*(indices_.begin())) ;
+}
+
 
 void TriggerBitChecker::syncIndices(const edm::EventBase &event, const edm::TriggerResults &result) const {
     indices_.clear();

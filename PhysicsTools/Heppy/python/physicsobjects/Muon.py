@@ -9,7 +9,7 @@ class Muon( Lepton ):
 
     def setTrackForDxyDz(self,what):
         if not hasattr(self,what):
-            raise RuntimeError, "I don't have a track called "+what
+            raise RuntimeError("I don't have a track called "+what)
         self._trackForDxyDz = what
 
     def looseId( self ):
@@ -85,22 +85,22 @@ class Muon( Lepton ):
     def chargedHadronIsoR(self,R=0.4):
         if   R == 0.3: return self.physObj.pfIsolationR03().sumChargedHadronPt 
         elif R == 0.4: return self.physObj.pfIsolationR04().sumChargedHadronPt 
-        raise RuntimeError, "Muon chargedHadronIso missing for R=%s" % R
+        raise RuntimeError("Muon chargedHadronIso missing for R=%s" % R)
 
     def neutralHadronIsoR(self,R=0.4):
         if   R == 0.3: return self.physObj.pfIsolationR03().sumNeutralHadronEt 
         elif R == 0.4: return self.physObj.pfIsolationR04().sumNeutralHadronEt 
-        raise RuntimeError, "Muon neutralHadronIso missing for R=%s" % R
+        raise RuntimeError("Muon neutralHadronIso missing for R=%s" % R)
 
     def photonIsoR(self,R=0.4):
         if   R == 0.3: return self.physObj.pfIsolationR03().sumPhotonEt 
         elif R == 0.4: return self.physObj.pfIsolationR04().sumPhotonEt 
-        raise RuntimeError, "Muon photonIso missing for R=%s" % R
+        raise RuntimeError("Muon photonIso missing for R=%s" % R)
 
     def chargedAllIsoR(self,R=0.4):
         if   R == 0.3: return self.physObj.pfIsolationR03().sumChargedParticlePt 
         elif R == 0.4: return self.physObj.pfIsolationR04().sumChargedParticlePt 
-        raise RuntimeError, "Muon chargedAllIso missing for R=%s" % R
+        raise RuntimeError("Muon chargedAllIso missing for R=%s" % R)
 
     def chargedAllIso(self):
         return self.chargedAllIsoR()
@@ -108,7 +108,7 @@ class Muon( Lepton ):
     def puChargedHadronIsoR(self,R=0.4):
         if   R == 0.3: return self.physObj.pfIsolationR03().sumPUPt 
         elif R == 0.4: return self.physObj.pfIsolationR04().sumPUPt 
-        raise RuntimeError, "Muon chargedHadronIso missing for R=%s" % R
+        raise RuntimeError("Muon chargedHadronIso missing for R=%s" % R)
 
 
     def absIsoWithFSR(self, R=0.4, puCorr="deltaBeta", dBetaFactor=0.5):
@@ -128,7 +128,7 @@ class Muon( Lepton ):
         elif puCorr in ["none","None",None]:
             offset = 0
         else:
-             raise RuntimeError, "Unsupported PU correction scheme %s" % puCorr
+             raise RuntimeError("Unsupported PU correction scheme %s" % puCorr)
         return self.chargedHadronIsoR(R)+max(0.,photonIso+self.neutralHadronIsoR(R)-offset)            
 
     def ptErr(self):

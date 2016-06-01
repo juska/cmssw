@@ -37,7 +37,7 @@ class diclist( list ):
         '''These functions are quite risky...'''
         try:
             return super(diclist, self).__setitem__(index, value)
-        except TypeError,ValueError:
+        except TypeError as ValueError:
             return super(diclist, self).__setitem__( self.dico[index], value )
             
 

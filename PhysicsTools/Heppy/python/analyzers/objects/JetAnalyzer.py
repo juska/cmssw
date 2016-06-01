@@ -101,6 +101,15 @@ class JetAnalyzer( Analyzer ):
         self.lepPtMin = getattr(self.cfg_ana, 'minLepPt', -1)
         self.lepSelCut = getattr(self.cfg_ana, 'lepSelCut', lambda lep : True)
         self.jetGammaDR =  getattr(self.cfg_ana, 'jetGammaDR', 0.4)
+        self.jetGammaLepDR =  getattr(self.cfg_ana, 'jetGammaLepDR', 0.4)
+        self.cleanFromLepAndGammaSimultaneously = getattr(self.cfg_ana, 'cleanFromLepAndGammaSimultaneously', False)
+        if self.cleanFromLepAndGammaSimultaneously:
+            if hasattr(self.cfg_ana, 'jetGammaLepDR'):
+                self.jetGammaLepDR =  self.jetGammaLepDR
+            elif (self.jetGammaDR == self.jetLepDR):
+                self.jetGammaLepDR = self.jetGammaDR
+            else:
+                raise RuntimeError, "DR for simultaneous cleaning of jets from leptons and photons is not defined, and dR(gamma, jet)!=dR(lep, jet)"
         if(self.cfg_ana.doQG):
             qgdefname="{CMSSW_BASE}/src/PhysicsTools/Heppy/data/pdfQG_AK4chs_13TeV_v2b.root"
             self.qglcalc = QGLikelihoodCalculator(getattr(self.cfg_ana,"QGpath",qgdefname).format(CMSSW_BASE= os.environ['CMSSW_BASE']))
@@ -132,7 +141,8 @@ class JetAnalyzer( Analyzer ):
         ## Read jets, if necessary recalibrate and shift MET
         if self.cfg_ana.copyJetsByValue: 
           import ROOT
-          self.allJets = map(lambda j:Jet(ROOT.pat.Jet(ROOT.edm.Ptr(ROOT.pat.Jet)(ROOT.edm.ProductID(),j,0))), self.handles['jets'].product()) #copy-by-value is safe if JetAnalyzer is ran more than once
+          #from ROOT.heppy import JetUtils
+          self.allJets = map(lambda j:Jet(ROOT.heppy.JetUtils.copyJet(j)), self.handles['jets'].product())  #copy-by-value is safe if JetAnalyzer is ran more than once
         else: 
           self.allJets = map(Jet, self.handles['jets'].product()) 
         if self.doExtPu :
@@ -170,7 +180,8 @@ class JetAnalyzer( Analyzer ):
             if self.cfg_ana.do_mc_match:
                 for igj, gj in enumerate(self.genJets):
                     gj.index = igj
-                self.matchJets(event, self.allJets)
+#                self.matchJets(event, allJets)
+                self.matchJets(event, [ j for j in self.allJets if j.pt()>self.cfg_ana.jetPt ]) # To match only jets above chosen threshold
             if getattr(self.cfg_ana, 'smearJets', False):
                 self.smearJets(event, self.allJets)
 
@@ -253,10 +264,19 @@ class JetAnalyzer( Analyzer ):
             else:
                 photons = [ g for g in event.selectedPhotons ] 
 
-        self.gamma_cleanJetsAll = cleanNearestJetOnly(self.cleanJetsAll, photons, self.jetGammaDR)
+        self.gamma_cleanJetaAll = []
+        self.gamma_noIdCleanJetsAll = []
+
+        if self.cleanFromLepAndGammaSimultaneously:
+            self.gamma_cleanJetsAll = cleanNearestJetOnly(jetsEtaCut, photons+leptons, self.jetGammaLepDR)
+            self.gamma_noIdCleanJetsAll = cleanNearestJetOnly(self.jetsAllNoID, photons+leptons, self.jetGammaLepDR)
+        else:
+            self.gamma_cleanJetsAll = cleanNearestJetOnly(self.cleanJetsAll, photons, self.jetGammaDR)
+            self.gamma_noIdCleanJetsAll = cleanNearestJetOnly(self.noIdCleanJetsAll, photons, self.jetGammaDR)
+
         self.gamma_cleanJets    = [j for j in self.gamma_cleanJetsAll if abs(j.eta()) <  self.cfg_ana.jetEtaCentral ]
         self.gamma_cleanJetsFwd = [j for j in self.gamma_cleanJetsAll if abs(j.eta()) >= self.cfg_ana.jetEtaCentral ]
-        self.gamma_noIdCleanJetsAll = cleanNearestJetOnly(self.noIdCleanJetsAll, photons, self.jetGammaDR)
+
         self.gamma_noIdCleanJets    = [j for j in self.gamma_noIdCleanJetsAll if abs(j.eta()) <  self.cfg_ana.jetEtaCentral ]
         self.gamma_noIdCleanJetsFwd = [j for j in self.gamma_noIdCleanJetsAll if abs(j.eta()) >= self.cfg_ana.jetEtaCentral ]
         ###
@@ -335,7 +355,7 @@ class JetAnalyzer( Analyzer ):
             if self.cfg_ana.do_mc_match:
                 self.jetFlavour(event)
 
-        if hasattr(event,"jets"+self.cfg_ana.collectionPostFix): raise RuntimeError, "Event already contains a jet collection with the following postfix: "+self.cfg_ana.collectionPostFix
+        if hasattr(event,"jets"+self.cfg_ana.collectionPostFix): raise RuntimeError("Event already contains a jet collection with the following postfix: "+self.cfg_ana.collectionPostFix)
         setattr(event,"rho"                    +self.cfg_ana.collectionPostFix, self.rho                    ) 
         setattr(event,"deltaMetFromJEC"        +self.cfg_ana.collectionPostFix, self.deltaMetFromJEC        ) 
         setattr(event,"type1METCorr"           +self.cfg_ana.collectionPostFix, self.type1METCorr           )
@@ -441,7 +461,7 @@ class JetAnalyzer( Analyzer ):
     def smearJets(self, event, jets):
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TWikiTopRefSyst#Jet_energy_resolution
        for jet in jets:
-            gen = jet.mcJet 
+            gen = getattr(jet,"mcJet",None)
             if gen != None:
                genpt, jetpt, aeta = gen.pt(), jet.pt(), abs(jet.eta())
                # from https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
@@ -506,6 +526,9 @@ setattr(JetAnalyzer,"defaultConfig", cfg.Analyzer(
     alwaysCleanPhotons = False,
     do_mc_match=True,
     cleanGenJetsFromPhoton = False,
+    jetGammaDR=0.4,
+    cleanFromLepAndGammaSimultaneously = False,
+    jetGammaLepDR=0.4,
     attachNeutrinos = True,
     genNuSelection = lambda nu : True, #FIXME: add here check for ispromptfinalstate
     collectionPostFix = ""

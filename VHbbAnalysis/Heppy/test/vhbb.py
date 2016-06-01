@@ -418,7 +418,7 @@ sample = cfg.MCComponent(
 		#"045996FE-A19D-E511-B76D-D4AE526A0B47.root" ##ttbar
 		#"/scratch/bianchi/004CB067-8DBD-E511-B0FB-047D7B881D3A.root"
 #		"027D7153-29BF-E511-A2BC-0025B3E025B6.root"
-		"root://xrootd.ba.infn.it//store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-100to200_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1/60000/027D7153-29BF-E511-A2BC-0025B3E025B6.root"
+"root://xrootd.ba.infn.it//store/mc/RunIISpring16MiniAODv1/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0899BDA9-AE01-E611-A239-008CFA05EA2C.root"
 		],
     #files = ["226BB247-A565-E411-91CF-00266CFF0AF4.root"],
     name="ZHLL125", isEmbed=False,

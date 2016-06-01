@@ -83,7 +83,7 @@ class LeptonAnalyzer( Analyzer ):
             self.miniIsolationPUCorr = self.cfg_ana.miniIsolationPUCorr
             self.miniIsolationVetoLeptons = self.cfg_ana.miniIsolationVetoLeptons
             if self.miniIsolationVetoLeptons not in [ None, 'any', 'inclusive' ]:
-                raise RuntimeError, "miniIsolationVetoLeptons should be None, or 'any' (all reco leptons), or 'inclusive' (all inclusive leptons)"
+                raise RuntimeError("miniIsolationVetoLeptons should be None, or 'any' (all reco leptons), or 'inclusive' (all inclusive leptons)")
             if self.miniIsolationPUCorr == "weights":
                 self.IsolationComputer = heppy.IsolationComputer(0.4)
             else:
@@ -319,7 +319,7 @@ class LeptonAnalyzer( Analyzer ):
                 mu.absIso03 = (mu.pfIsolationR03().sumChargedHadronPt + max( mu.pfIsolationR03().sumNeutralHadronEt +  mu.pfIsolationR03().sumPhotonEt -  mu.pfIsolationR03().sumPUPt/2,0.0))
                 mu.absIso04 = (mu.pfIsolationR04().sumChargedHadronPt + max( mu.pfIsolationR04().sumNeutralHadronEt +  mu.pfIsolationR04().sumPhotonEt -  mu.pfIsolationR04().sumPUPt/2,0.0))
             else :
-                raise RuntimeError, "Unsupported mu_isoCorr name '" + str(self.cfg_ana.mu_isoCorr) +  "'! For now only 'rhoArea' and 'deltaBeta' are supported."
+                raise RuntimeError("Unsupported mu_isoCorr name '" + str(self.cfg_ana.mu_isoCorr) +  "'! For now only 'rhoArea' and 'deltaBeta' are supported.")
             mu.relIso03 = mu.absIso03/mu.pt()
             mu.relIso04 = mu.absIso04/mu.pt()
         return allmuons
@@ -416,7 +416,7 @@ class LeptonAnalyzer( Analyzer ):
                  ele.absIso03 = (ele.chargedHadronIsoR(0.3) + max( ele.neutralHadronIsoR(0.3)+ele.photonIsoR(0.3) - ele.puChargedHadronIsoR(0.3)/2, 0.0))
                  ele.absIso04 = (ele.chargedHadronIsoR(0.4) + max( ele.neutralHadronIsoR(0.4)+ele.photonIsoR(0.4) - ele.puChargedHadronIsoR(0.4)/2, 0.0))
             else :
-                 raise RuntimeError, "Unsupported ele_isoCorr name '" + str(self.cfg_ana.ele_isoCorr) +  "'! For now only 'rhoArea' and 'deltaBeta' are supported."
+                 raise RuntimeError("Unsupported ele_isoCorr name '" + str(self.cfg_ana.ele_isoCorr) +  "'! For now only 'rhoArea' and 'deltaBeta' are supported.")
             ele.relIso03 = ele.absIso03/ele.pt()
             ele.relIso04 = ele.absIso04/ele.pt()
 
@@ -428,12 +428,14 @@ class LeptonAnalyzer( Analyzer ):
                  ele.tightIdResult = -1 + 1*ele.electronID("POG_Cuts_ID_2012_Veto_full5x5") + 1*ele.electronID("POG_Cuts_ID_2012_Loose_full5x5") + 1*ele.electronID("POG_Cuts_ID_2012_Medium_full5x5") + 1*ele.electronID("POG_Cuts_ID_2012_Tight_full5x5")
             elif self.cfg_ana.ele_tightId=="Cuts_PHYS14_25ns_v1_ConvVetoDxyDz" :
                  ele.tightIdResult = -1 + 1*ele.electronID("POG_Cuts_ID_PHYS14_25ns_v1_ConvVetoDxyDz_Veto_full5x5") + 1*ele.electronID("POG_Cuts_ID_PHYS14_25ns_v1_ConvVetoDxyDz_Loose_full5x5") + 1*ele.electronID("POG_Cuts_ID_PHYS14_25ns_v1_ConvVetoDxyDz_Medium_full5x5") + 1*ele.electronID("POG_Cuts_ID_PHYS14_25ns_v1_ConvVetoDxyDz_Tight_full5x5")
+            elif self.cfg_ana.ele_tightId=="Cuts_SPRING15_25ns_v1_ConvVetoDxyDz" :
+                 ele.tightIdResult = -1 + 1*ele.electronID("POG_Cuts_ID_SPRING15_25ns_v1_ConvVetoDxyDz_Veto_full5x5") + 1*ele.electronID("POG_Cuts_ID_SPRING15_25ns_v1_ConvVetoDxyDz_Loose_full5x5") + 1*ele.electronID("POG_Cuts_ID_SPRING15_25ns_v1_ConvVetoDxyDz_Medium_full5x5") + 1*ele.electronID("POG_Cuts_ID_SPRING15_25ns_v1_ConvVetoDxyDz_Tight_full5x5")
 
             else :
                  try:
                      ele.tightIdResult = ele.electronID(self.cfg_ana.ele_tightId)
                  except RuntimeError:
-                     raise RuntimeError, "Unsupported ele_tightId name '" + str(self.cfg_ana.ele_tightId) +  "'! For now only 'MVA' and 'Cuts_2012' are supported, in addition to what provided in Electron.py."
+                     raise RuntimeError("Unsupported ele_tightId name '" + str(self.cfg_ana.ele_tightId) +  "'! For now only 'MVA' and 'Cuts_2012' are supported, in addition to what provided in Electron.py.")
 
         # JP/CV: add Spring15 EGamma POG electron ID MVA
         # ( https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentificationRun2#Recipes_for_7_4_12_Spring15_MVA )
