@@ -85,17 +85,23 @@ treeProducer= cfg.Analyzer(
           "met"    : NTupleObject("met",     metType, help="PF E_{T}^{miss}, after default type 1 corrections"),
           "fakeMET"    : NTupleObject("fakeMET", fourVectorType, help="fake MET in Zmumu event obtained removing the muons"),
           "H"    : NTupleObject("H", fourVectorType, help="higgs"),
-          "HCSV"    : NTupleObject("HCSV", fourVectorType, help="higgs CSV selection"),
           "H_reg"    : NTupleObject("H_reg", fourVectorType, help="regressed higgs"),
-          "HCSV_reg"    : NTupleObject("HCSV_reg", fourVectorType, help="regresses higgs CSV selection"),
           "H_reg_corrJECUp"    : NTupleObject("H_reg_corrJECUp", fourVectorType, help="regressed higgs for JECUp"),
-          "HCSV_reg_corrJECUp"    : NTupleObject("HCSV_reg_corrJECUp", fourVectorType, help="reg_corrresses higgs for JECUp CSV selection"),
           "H_reg_corrJECDown"    : NTupleObject("H_reg_corrJECDown", fourVectorType, help="regressed higgs for JECDown"),
-          "HCSV_reg_corrJECDown"    : NTupleObject("HCSV_reg_corrJECDown", fourVectorType, help="reg_corrresses higgs for JECDown CSV selection"),
           "H_reg_corrJERUp"    : NTupleObject("H_reg_corrJERUp", fourVectorType, help="regressed higgs for JERUp"),
-          "HCSV_reg_corrJERUp"    : NTupleObject("HCSV_reg_corrJERUp", fourVectorType, help="reg_corrresses higgs for JERUp CSV selection"),
           "H_reg_corrJERDown"    : NTupleObject("H_reg_corrJERDown", fourVectorType, help="regressed higgs for JERDown"),
+	  "HCSV"    : NTupleObject("HCSV", fourVectorType, help="higgs CSV selection"),
+	  "HCSV_reg"    : NTupleObject("HCSV_reg", fourVectorType, help="regresses higgs CSV selection"),
+          "HCSV_reg_corrJECUp"    : NTupleObject("HCSV_reg_corrJECUp", fourVectorType, help="reg_corrresses higgs for JECUp CSV selection"),
+          "HCSV_reg_corrJECDown"    : NTupleObject("HCSV_reg_corrJECDown", fourVectorType, help="reg_corrresses higgs for JECDown CSV selection"),
+          "HCSV_reg_corrJERUp"    : NTupleObject("HCSV_reg_corrJERUp", fourVectorType, help="reg_corrresses higgs for JERUp CSV selection"),
           "HCSV_reg_corrJERDown"    : NTupleObject("HCSV_reg_corrJERDown", fourVectorType, help="regressed higgs for JERDown CSV selection"),
+	  "HCMVAV2"    : NTupleObject("HCMVAV2", fourVectorType, help="higgs CMVAV2 selection"),
+	  "HCMVAV2_reg"    : NTupleObject("HCMVAV2_reg", fourVectorType, help="regresses higgs CMVAV2 selection"),
+          "HCMVAV2_reg_corrJECUp"    : NTupleObject("HCMVAV2_reg_corrJECUp", fourVectorType, help="reg_corrresses higgs for JECUp CMVAV2 selection"),
+          "HCMVAV2_reg_corrJECDown"    : NTupleObject("HCMVAV2_reg_corrJECDown", fourVectorType, help="reg_corrresses higgs for JECDown CMVAV2 selection"),
+          "HCMVAV2_reg_corrJERUp"    : NTupleObject("HCMVAV2_reg_corrJERUp", fourVectorType, help="reg_corrresses higgs for JERUp CMVAV2 selection"),
+          "HCMVAV2_reg_corrJERDown"    : NTupleObject("HCMVAV2_reg_corrJERDown", fourVectorType, help="regressed higgs for JERDown CMVAV2 selection"),
           "HaddJetsdR08"    : NTupleObject("HaddJetsdR08", fourVectorType, help="higgs with cen jets added if dR<0.8 from hJetsCSV selection"),
           "V"    : NTupleObject("V", fourVectorType, help="z or w"),
           "softActivityJets"    : NTupleObject("softActivity", softActivityType, help="VBF soft activity variables"),
@@ -116,6 +122,8 @@ treeProducer= cfg.Analyzer(
                 "ajidx"       : NTupleCollection("aJidx",    objectInt, 8,help="additional jet indices"),
                 "hjidxCSV"       : NTupleCollection("hJCidx",    objectInt, 2,help="Higgs jet indices CSV"),
                 "ajidxCSV"       : NTupleCollection("aJCidx",    objectInt, 8,help="additional jet indices CSV"),
+                "hjidxCMVAV2"       : NTupleCollection("hJCMVAV2idx",    objectInt, 2,help="Higgs jet indices CMVAV2"),
+                "ajidxCMVAV2"       : NTupleCollection("aJCMVAV2idx",    objectInt, 8,help="additional jet indices CMVAV2"),
                 "cleanJetsAll"       : NTupleCollection("Jet",     jetTypeVHbb, 25, help="Cental+fwd jets after full selection and cleaning, sorted by b-tag"),
                 "hjidxaddJetsdR08"       : NTupleCollection("hjidxaddJetsdR08",    objectInt, 5,help="Higgs jet indices with Higgs formed adding cen jets if dR<0.8 from hJetsCSV"),
                 "ajidxaddJetsdR08"       : NTupleCollection("ajidxaddJetsdR08",    objectInt, 8,help="additional jet indices with Higgs formed adding cen jets if dR<0.8 from hJetsCSV"),
@@ -124,7 +132,7 @@ treeProducer= cfg.Analyzer(
                 "inclusiveTaus"  : NTupleCollection("TauGood", tauTypeVHbb, 25, help="Taus after the preselection"),
                 "softActivityJets"    : NTupleCollection("softActivityJets", fourVectorType, 5, help="jets made for soft activity"),
                 "softActivityVHJets"    : NTupleCollection("softActivityVHJets", fourVectorType, 5, help="jets made for soft activity VH version"),
-                "goodVertices"    : NTupleCollection("primaryVertices", primaryVertexType, 4, help="first four PVs"),
+                "goodVertices"    : NTupleCollection("primaryVertices", primaryVertexType, 4, help="first four PVs"), 
 
 		#dump of gen objects
                 #"generatorSummary"    : NTupleCollection("GenSummary", genParticleWithLinksType, 30, help="Generator summary, see description in Heppy GeneratorAnalyzer",mcOnly=True),
@@ -168,6 +176,17 @@ shifted_mets = {mk: NTupleObject(nm, shiftedMetType, help="PF E_{T}^{miss}, afte
 treeProducer.globalObjects.update(shifted_mets)
 
 btag_weights = {}
+for algo in ["CSV", "CMVAV2"]:
+	for syst in ["central", "up_jes", "down_jes", "up_lf", "down_lf", "up_hf", "down_hf", "up_hfstats1", "down_hfstats1", "up_hfstats2", "down_hfstats2", "up_lfstats1", "down_lfstats1", "up_lfstats2", "down_lfstats2", "up_cferr1", "down_cferr1", "up_cferr2", "down_cferr2"]:
+		syst_name = "" if syst=="central" else ("_"+syst) 
+		btag_weights["btagWeight"+algo+syst_name] = NTupleVariable("btagWeight"+algo+syst_name,
+									   lambda ev, get_event_SF=get_event_SF, syst=syst, algo=algo, btag_calibrators=btag_calibrators : get_event_SF(ev.cleanJetsAll, syst, algo, btag_calibrators)
+									   , float, mcOnly=True, help="b-tag "+algo+"continuous  weight, variating "+syst
+									   )
+treeProducer.globalVariables += list(btag_weights.values())
+
+'''
+
 for syst in ["JES", "LF", "HF", "HFStats1", "HFStats2", "LFStats1", "LFStats2", "cErr1", "cErr2"]:
 	for sdir in ["Up", "Down"]:
 		name = "bTagWeight"+syst+sdir
@@ -183,6 +202,7 @@ btag_weights["bTagWeight"] = NTupleVariable("bTagWeight",
 )
 #print list(btag_weights.values())
 treeProducer.globalVariables += list(btag_weights.values())
+'''
 
 # Lepton Analyzer, take its default config and fix loose iso consistent with tight definition
 from PhysicsTools.Heppy.analyzers.objects.LeptonAnalyzer import LeptonAnalyzer
@@ -308,6 +328,8 @@ VHbb = cfg.Analyzer(
     zMuSelection = lambda x : x.pt() > 15 and x.muonID("POG_ID_Loose") and mu_pfRelIso04(x) < 0.25,
     zLeadingElePt = 20,
     zLeadingMuPt = 20,
+    singleJetThreshold = 200,
+    sumPtThreshold = 160.,
     higgsJetsPreSelection = lambda x: (( x.puJetId() > 0 and x.jetID('POG_PFID_Loose')) or abs(x.eta())>3.0 ) and x.pt() >  20 ,
     higgsJetsPreSelectionVBF = lambda x: x.pt() >  20 ,
 #    higgsJetsPreSelectionVBF = lambda x: (( x.puJetId() > 0 and x.jetID('POG_PFID_Loose')) or abs(x.eta())>3.0 ) and x.pt() >  20,
@@ -315,10 +337,10 @@ VHbb = cfg.Analyzer(
     doSoftActivityVH=True,
     doVBF=True,
     regressions = [
-        {"weight":"ttbar-fall15_TargetGenOverPt_GenPtCut0.weights.xml", "name":"jet0Regression", "vtypes":[0,1,2,3,4,5,-1]},
+        {"weight":"ttbar-spring16-80X.weights.xml", "name":"jet0Regression", "vtypes":[0,1,2,3,4,5,-1]},
     ],
     regressionVBF = [
-        {"weight":"ttbar-fall15_TargetGenOverPt_GenPtCut0.weights.xml", "name":"jet0Regression_vbf", "vtypes":[0,1,2,3,4,5,-1]}
+        {"weight":"ttbar-spring16-80X.weights.xml", "name":"jet0Regression_vbf", "vtypes":[0,1,2,3,4,5,-1]}
     ],
     VBFblikelihood = {"weight":"TMVA_blikelihood_vbf_cmssw76_h21trained.weights.xml", "name":"BDGT"}
 )
@@ -419,7 +441,9 @@ from PhysicsTools.Heppy.utils.miniAodFiles import miniAodFiles
 sample = cfg.MCComponent(
 	files = [
 		#"root://xrootd.ba.infn.it//store/mc/RunIIFall15MiniAODv1/TT_TuneCUETP8M1_13TeV-powheg-scaledown-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/30000/045996FE-A19D-E511-B76D-D4AE526A0B47.root" ##ttbar
-		"root://xrootd.ba.infn.it//store/mc/RunIISpring16MiniAODv1/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0899BDA9-AE01-E611-A239-008CFA05EA2C.root"
+		#"root://xrootd.ba.infn.it//store/mc/RunIISpring16MiniAODv1/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0899BDA9-AE01-E611-A239-008CFA05EA2C.root"
+		"root://stormgf1.pi.infn.it:1094//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/E8090432-8628-E611-8713-001EC9ADFDC9.root",
+		#"root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/mc/RunIISpring16MiniAODv2/WW_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/0AF21AF1-121B-E611-B652-549F35AE4F88.root"
 		],
     #files = ["226BB247-A565-E411-91CF-00266CFF0AF4.root"],
     name="ZHLL125", isEmbed=False,
