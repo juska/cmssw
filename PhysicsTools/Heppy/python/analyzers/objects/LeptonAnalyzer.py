@@ -632,7 +632,7 @@ class LeptonAnalyzer( Analyzer ):
                                        deltaRMax = 1.2, filter_func = plausible)
         for lep in leps:
             gen = match[lep]
-            lep.mcMatchId  = (gen.sourceId if gen != None else  0)
+            lep.mcMatchId  = (gen.sourceId if gen != None and hasattr(gen, "sourceId") else  0)
             lep.mcMatchTau = (gen in event.gentauleps if gen else -99)
             lep.mcLep=gen
 
