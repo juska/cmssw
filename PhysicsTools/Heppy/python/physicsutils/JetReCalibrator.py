@@ -132,26 +132,18 @@ class JetReCalibrator:
         corrector.setRho(rho)
         corr = corrector.getCorrection()
 
-        # if delta != 0:
-        # Short circuit the condition so we always attach the uncertainty to the jet
-        # (Why was this only done for delta != 0?)
-        if True:
-            if not self.JetUncertainty: raise RuntimeError("Jet energy scale uncertainty shifts requested, but not available")
-            self.JetUncertainty.setJetEta(jet.eta())
+        if not self.JetUncertainty: raise RuntimeError("Jet energy scale uncertainty shifts requested, but not available")
+        self.JetUncertainty.setJetEta(jet.eta())
+        self.JetUncertainty.setJetPt(corr * jet.pt() * jet.rawFactor())
 
-            if isHttSubjet:
-                self.JetUncertainty.setJetPt(corr * jet.pt())
-            else:
-                self.JetUncertainty.setJetPt(corr * jet.pt() * jet.rawFactor())
-
-            try:
-                jet.jetEnergyCorrUncertainty = JetUncertainty.getUncertainty(True)
-                #print "jetEnergyCorrUncertainty {0} {1}".format(uncertainty, jet.jetEnergyCorrUncertainty)
-            except RuntimeError as r:
-                print "Caught %s when getting uncertainty for jet of pt %.1f, eta %.2f\n" % (r,corr * jet.pt() * jet.rawFactor(),jet.eta())
-                jet.jetEnergyCorrUncertainty = 0.5
-            #print "   jet with corr pt %6.2f has an uncertainty %.2f " % (jet.pt()*jet.rawFactor()*corr, jet.jetEnergyCorrUncertainty)
-            corr *= max(0, 1+delta*jet.jetEnergyCorrUncertainty)
+        try:
+            jet.jetEnergyCorrUncertainty = JetUncertainty.getUncertainty(True)
+            #print "jetEnergyCorrUncertainty {0} {1}".format(uncertainty, jet.jetEnergyCorrUncertainty)
+        except RuntimeError as r:
+            print "Caught %s when getting uncertainty for jet of pt %.1f, eta %.2f\n" % (r,corr * jet.pt() * jet.rawFactor(),jet.eta())
+            jet.jetEnergyCorrUncertainty = 0.5
+        #print "   jet with corr pt %6.2f has an uncertainty %.2f " % (jet.pt()*jet.rawFactor()*corr, jet.jetEnergyCorrUncertainty)
+        corr *= max(0, 1+delta*jet.jetEnergyCorrUncertainty)
         return corr
 
     def rawP4forType1MET_(self, jet):
