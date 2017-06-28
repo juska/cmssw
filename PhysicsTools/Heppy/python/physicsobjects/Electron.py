@@ -425,3 +425,22 @@ class Electron( Lepton ):
     def ptErr(self):
         return self.p4Error(self.candidateP4Kind())*self.pt()/self.p() if self.validCandidateP4Kind() else None
  
+    def combIsoAreaCorr(self):
+        variables = self.pfIsolationVariables()
+        r = self.rho
+        ea = self.getEffectiveArea()
+        iso = (self.physObj.pfIsolationVariables().sumChargedHadronPt + max(0.0, self.physObj.pfIsolationVariables().sumNeutralHadronEt + self.physObj.pfIsolationVariables().sumPhotonEt - r * ea)) / self.pt()
+        return iso
+
+    def getEffectiveArea(self):
+        etamin = [0.0000,1.0000,1.4790,2.0000,2.2000,2.3000,2.4000]
+        etamax = [1.0000,1.4790,2.0000,2.2000,2.3000,2.4000,5.0000]
+        area   = [0.1703,0.1715,0.1213,0.1230,0.1635,0.1937,0.2393]
+
+        effArea = 0
+        for iEta in range (0,len(etamin)):
+            if abs(self.superCluster().eta()) >= etamin[iEta] and abs(self.superCluster().eta()) < etamax[iEta]:
+                effArea = area[iEta]
+                break
+
+        return effArea
