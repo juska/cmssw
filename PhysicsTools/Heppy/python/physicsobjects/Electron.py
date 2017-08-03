@@ -433,6 +433,9 @@ class Electron( Lepton ):
         return iso
 
     def getEffectiveArea(self):
+        """
+        https://github.com/ikrav/cmssw/blob/egm_id_80X_v1/RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_80X.txt
+        """
         etamin = [0.0000,1.0000,1.4790,2.0000,2.2000,2.3000,2.4000]
         etamax = [1.0000,1.4790,2.0000,2.2000,2.3000,2.4000,5.0000]
         area   = [0.1703,0.1715,0.1213,0.1230,0.1635,0.1937,0.2393]
