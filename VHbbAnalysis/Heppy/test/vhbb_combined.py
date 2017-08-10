@@ -32,9 +32,9 @@ boostana=cfg.Analyzer(
 boostana.GT = "Summer16_23Sep2016GV3_DATA" # we do L2L3 for MC and L2L3Res for data. Can therefor use data GT for both
 boostana.jecPath = os.environ['CMSSW_BASE']+"/src/VHbbAnalysis/Heppy/data/jec"
 boostana.isMC = sample.isMC
-boostana.skip_ca15 = False
+boostana.skip_ca15 = True
 boostana.facJEC = factorizedJetCorrections
-sequence.insert(sequence.index(VHbb),boostana)
+#sequence.insert(sequence.index(VHbb),boostana)
 
 #used freshly computed MVA ID variables
 LepAna.updateEleMVA = True
@@ -46,16 +46,16 @@ genhfana=cfg.Analyzer(
     verbose=False,
     class_object=GenHFHadronMatcher,
 )
-sequence.insert(sequence.index(VHbb),genhfana)
+sequence.insert(sequence.index(treeProducer)-1,genhfana)
 
 
-treeProducer.collections["ak08"] = NTupleCollection("FatjetAK08ungroomed",  ak8FatjetType,  10,
-                                                    help = "AK, R=0.8, pT > 200 GeV, no grooming, calibrated")
-
-treeProducer.collections["ak08softdropsubjets"] = NTupleCollection("SubjetAK08softdrop",
-                                                                 patSubjetType,
-                                                                 10,
-                                                                 help="Subjets of AK, R=0.8 softdrop")
+#treeProducer.collections["ak08"] = NTupleCollection("FatjetAK08ungroomed",  ak8FatjetType,  10,
+#                                                    help = "AK, R=0.8, pT > 200 GeV, no grooming, calibrated")
+#
+#treeProducer.collections["ak08softdropsubjets"] = NTupleCollection("SubjetAK08softdrop",
+#                                                                 patSubjetType,
+#                                                                 10,
+#                                                                 help="Subjets of AK, R=0.8 softdrop")
 
 if not boostana.skip_ca15:
     treeProducer.collections["ca15ungroomed"] = NTupleCollection("FatjetCA15ungroomed",  fatjetType,  10,
@@ -140,7 +140,7 @@ btagana=cfg.Analyzer(
     verbose=False,
     class_object=AdditionalBTag,
 )
-sequence.insert(sequence.index(VHbb),btagana)
+#sequence.insert(sequence.index(treeProducer)-1,btagana)
 #VHbb.btagDiscriminator=lambda x: x.btag("pfCombinedInclusiveSecondaryVertexV2BJetTags")
 
 # Add Information on generator level hadronic tau decays
@@ -150,11 +150,12 @@ if sample.isMC:
         verbose = False,
         class_object = TauGenJetAnalyzer,
     )
-    sequence.insert(sequence.index(VHbb),TauGenJet)
+    #sequence.insert(sequence.index(VHbb),TauGenJet)
 
-    treeProducer.collections["tauGenJets"] = NTupleCollection("GenHadTaus", genTauJetType, 15, help="Generator level hadronic tau decays")
-    
-    treeProducer.collections["LHE_weights_pdf_eigen"] = NTupleCollection("LHE_weights_pdf_eigen", objectFloat , 60, help="LHE weights for pdf variation (NNPDF) in eigenvector form through MC2Hessian")
+    #treeProducer.collections["tauGenJets"] = NTupleCollection("GenHadTaus", genTauJetType, 15, help="Generator level hadronic tau decays")
+   
+    #in VHbbAnalyzer.py
+    #treeProducer.collections["LHE_weights_pdf_eigen"] = NTupleCollection("LHE_weights_pdf_eigen", objectFloat , 60, help="LHE weights for pdf variation (NNPDF) in eigenvector form through MC2Hessian")
 
 # Switch MET inputs to newly created slimmedMETs collection with PFMET significance matrix added
 for ic in range(len(config.sequence)):

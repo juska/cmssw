@@ -92,30 +92,30 @@ tauTypeVHbb = NTupleObjectType("tauTypeVHbb", baseObjectTypes = [ tauType ], var
 ##------------------------------------------  
 
 jetTypeVHbb = NTupleObjectType("jet",  baseObjectTypes = [ jetType ], variables = [
-    NTupleVariable("rawPtAfterSmearing",  lambda x : x.pt() / getattr(x, 'corr', 1) , help="p_{T} before JEC but including JER effect"),
-    NTupleVariable("idxFirstTauMatch", lambda x : x.tauIdxs[0] if len(getattr(x, "tauIdxs", [])) > 0 else -1, int,help='index of the first matching tau'),
-    NTupleVariable("heppyFlavour", lambda x : x.mcFlavour, int,     mcOnly=True, help="heppy-style match to gen quarks"),
+#    NTupleVariable("rawPtAfterSmearing",  lambda x : x.pt() / getattr(x, 'corr', 1) , help="p_{T} before JEC but including JER effect"),
+#    NTupleVariable("idxFirstTauMatch", lambda x : x.tauIdxs[0] if len(getattr(x, "tauIdxs", [])) > 0 else -1, int,help='index of the first matching tau'),
+#    NTupleVariable("heppyFlavour", lambda x : x.mcFlavour, int,     mcOnly=True, help="heppy-style match to gen quarks"),
 #    NTupleVariable("hadronFlavour", lambda x : x.hadronFlavour(), int,     mcOnly=True, help="hadron flavour (ghost matching to B/C hadrons)"),
-    NTupleVariable("ctagVsL", lambda x : x.bDiscriminator('pfCombinedCvsLJetTags'), help="c-btag vs light jets"),
-    NTupleVariable("ctagVsB", lambda x : x.bDiscriminator('pfCombinedCvsBJetTags'), help="c-btag vs light jets"),
-    NTupleVariable("btagBDT", lambda x : getattr(x,"btagBDT",-99), help="combined super-btag"),
-    NTupleVariable("btagProb", lambda x : x.btag('pfJetProbabilityBJetTags') , help="jet probability b-tag"),
-    NTupleVariable("btagBProb", lambda x : x.btag('pfJetBProbabilityBJetTags') , help="jet b-probability b-tag"),
-    NTupleVariable("btagSoftEl", lambda x : getattr(x, "btagSoftEl", -1000) , help="soft electron b-tag"),
-    NTupleVariable("btagSoftMu", lambda x : getattr(x, "btagSoftMu", -1000) , help="soft muon b-tag"),
-#see below
-    NTupleVariable("btagDeepCSVdusg",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probudsg"), help="deepCSV dusg"),
-    NTupleVariable("btagDeepCSVb",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probb"), help="deepCSV b"),
-    NTupleVariable("btagDeepCSVc",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probc"), help="deepCSV  charm"),
-    NTupleVariable("btagDeepCSVbb",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probbb"), help="deepCSV  bb"),
-    NTupleVariable("btagDeepCMVAdusg",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probudsg"), help="deepCMVA dusg"),
-    NTupleVariable("btagDeepCMVAb",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probb"), help="deepCMVA b"),
-    NTupleVariable("btagDeepCMVAc",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probc"), help="deepCMVA  charm"),
-    NTupleVariable("btagDeepCMVAbb",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probbb"), help="deepCMVA  bb"),
+#    NTupleVariable("ctagVsL", lambda x : x.bDiscriminator('pfCombinedCvsLJetTags'), help="c-btag vs light jets"),
+#    NTupleVariable("ctagVsB", lambda x : x.bDiscriminator('pfCombinedCvsBJetTags'), help="c-btag vs light jets"),
+#    NTupleVariable("btagBDT", lambda x : getattr(x,"btagBDT",-99), help="combined super-btag"),
+#    NTupleVariable("btagProb", lambda x : x.btag('pfJetProbabilityBJetTags') , help="jet probability b-tag"),
+#    NTupleVariable("btagBProb", lambda x : x.btag('pfJetBProbabilityBJetTags') , help="jet b-probability b-tag"),
+#    NTupleVariable("btagSoftEl", lambda x : getattr(x, "btagSoftEl", -1000) , help="soft electron b-tag"),
+#    NTupleVariable("btagSoftMu", lambda x : getattr(x, "btagSoftMu", -1000) , help="soft muon b-tag"),
+##see below
+#    NTupleVariable("btagDeepCSVdusg",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probudsg"), help="deepCSV dusg"),
+#    NTupleVariable("btagDeepCSVb",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probb"), help="deepCSV b"),
+#    NTupleVariable("btagDeepCSVc",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probc"), help="deepCSV  charm"),
+#    NTupleVariable("btagDeepCSVbb",   lambda x : x.bDiscriminator("newdeepFlavourJetTags:probbb"), help="deepCSV  bb"),
+#    NTupleVariable("btagDeepCMVAdusg",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probudsg"), help="deepCMVA dusg"),
+#    NTupleVariable("btagDeepCMVAb",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probb"), help="deepCMVA b"),
+#    NTupleVariable("btagDeepCMVAc",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probc"), help="deepCMVA  charm"),
+#    NTupleVariable("btagDeepCMVAbb",   lambda x : x.bDiscriminator("newdeepFlavourCMVAJetTags:probbb"), help="deepCMVA  bb"),
 #    NTupleVariable("btagHip2",   lambda x : getattr(x,"btagHip",-2), help="pfCombinedInclusiveSVV2 with btv HIP mitigation"),
 #    NTupleVariable("btagCMVAV2",   lambda x : x.btag('newpfCombinedMVAV2BJetTags'), help="CMVAV2 with btv HIP mitigation"),
 #    NTupleVariable("btagHipCMVA2",   lambda x : getattr(x,"btagHip",-2), help="CMVAV2 with btv HIP mitigation"),
-    NTupleVariable("btagCSVV0",   lambda x : x.bDiscriminator('pfCombinedSecondaryVertexV2BJetTags'), help="should be the old CSV discriminator with AVR vertices"),
+#    NTupleVariable("btagCSVV0",   lambda x : x.bDiscriminator('pfCombinedSecondaryVertexV2BJetTags'), help="should be the old CSV discriminator with AVR vertices"),
     NTupleVariable("btagCMVAV2",  lambda x : x.btag('pfCombinedMVAV2BJetTags'), help="CMVA V2 discriminator"),
    # NTupleVariable("mcMatchId",    lambda x : x.mcMatchId,   int, mcOnly=True, help="Match to source from hard scatter (25 for H, 6 for t, 23/24 for W/Z)"),
    # NTupleVariable("puId", lambda x : x.puJetIdPassed, int,     mcOnly=False, help="puId (full MVA, loose WP, 5.3.X training on AK5PFchs: the only thing that is available now)"),
@@ -127,27 +127,27 @@ jetTypeVHbb = NTupleObjectType("jet",  baseObjectTypes = [ jetType ], variables 
     NTupleVariable("muEF", lambda x : x.muonEnergy()/(x.p4()*x.rawFactor()).energy(), float, mcOnly = False,help="muon energy fraction (relative to uncorrected jet energy)"),
     NTupleVariable("chMult", lambda x : x.chargedMultiplicity(), int, mcOnly = False,help="chargedMultiplicity from PFJet.h"),
     NTupleVariable("nhMult", lambda x : x.neutralMultiplicity(), int, mcOnly = False,help="neutralMultiplicity from PFJet.h"),
-    NTupleVariable("leadTrackPt", lambda x : x.leadTrackPt() , float, mcOnly = False, help="pt of the leading track in the jet"), 
+#    NTupleVariable("leadTrackPt", lambda x : x.leadTrackPt() , float, mcOnly = False, help="pt of the leading track in the jet"), 
     NTupleVariable("mcEta",   lambda x : x.mcJet.eta() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="eta of associated gen jet"),
     NTupleVariable("mcPhi",   lambda x : x.mcJet.phi() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="phi of associated gen jet"),
     NTupleVariable("mcM",   lambda x : x.mcJet.p4().M() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="mass of associated gen jet"),
-    NTupleVariable("leptonPdgId",   lambda x : x.leptons[0].pdgId() if len(x.leptons) > 0 else -99, mcOnly=False, help="pdg id of the first associated lepton"),
-    NTupleVariable("leptonPt",   lambda x : x.leptons[0].pt() if len(x.leptons) > 0 else -99, mcOnly=False, help="pt of the first associated lepton"),
-    NTupleVariable("leptonPtRel",   lambda x : ptRel(x.leptons[0].p4(),x.p4()) if len(x.leptons) > 0 else -99, mcOnly=False, help="ptrel of the first associated lepton"),
-    NTupleVariable("leptonPtRelInv",   lambda x : ptRel(x.p4(),x.leptons[0].p4()) if len(x.leptons) > 0 else -99, mcOnly=False, help="ptrel Run1 definition of the first associated lepton"),
-    NTupleVariable("leptonDeltaR",   lambda x : deltaR(x.leptons[0].p4().eta(),x.leptons[0].p4().phi(),x.p4().eta(),x.p4().phi()) if len(x.leptons) > 0 else -99, mcOnly=False, help="deltaR of the first associated lepton"),
-    NTupleVariable("leptonDeltaPhi",   lambda x : deltaPhi(x.leptons[0].p4().phi(),x.p4().phi()) if len(x.leptons) > 0 else 0, mcOnly=False, help="deltaPhi of the first associated lepton"),
-    NTupleVariable("leptonDeltaEta",   lambda x : x.leptons[0].p4().eta()-x.p4().eta() if len(x.leptons) > 0 else 0, mcOnly=False, help="deltaEta of the first associated lepton"),
-    NTupleVariable("vtxMass",   lambda x : x.userFloat("vtxMass"), mcOnly=False, help="vtxMass from btag"),
-    NTupleVariable("vtxNtracks",   lambda x : x.userFloat("vtxNtracks"), mcOnly=False, help="number of tracks at vertex from btag"),
-    NTupleVariable("vtxPt",   lambda x : sqrt(x.userFloat("vtxPx")**2 + x.userFloat("vtxPy")**2), mcOnly=False, help="pt of vertex from btag"),
-    NTupleVariable("vtx3DSig",   lambda x : x.userFloat("vtx3DSig"), mcOnly=False, help="decay len significance of vertex from btag"),
-    NTupleVariable("vtx3DVal",   lambda x : x.userFloat("vtx3DVal"), mcOnly=False, help="decay len of vertex from btag"),
-    NTupleVariable("vtxPosX",   lambda x : x.userFloat("vtxPosX"), mcOnly=False, help="X coord of vertex from btag"),
-    NTupleVariable("vtxPosY",   lambda x : x.userFloat("vtxPosY"), mcOnly=False, help="Y coord of vertex from btag"), 
-    NTupleVariable("vtxPosZ",   lambda x : x.userFloat("vtxPosZ"), mcOnly=False, help="Z coord of vertex from btag"),
-    NTupleVariable("pullVectorPhi", lambda x : getattr(x,"pullVectorPhi",-99), mcOnly=False, help="pull angle phi in the phi eta plane"),
-    NTupleVariable("pullVectorMag", lambda x : getattr(x,"pullVectorMag",-99), mcOnly=False, help="pull angle magnitude"),
+#    NTupleVariable("leptonPdgId",   lambda x : x.leptons[0].pdgId() if len(x.leptons) > 0 else -99, mcOnly=False, help="pdg id of the first associated lepton"),
+#    NTupleVariable("leptonPt",   lambda x : x.leptons[0].pt() if len(x.leptons) > 0 else -99, mcOnly=False, help="pt of the first associated lepton"),
+#    NTupleVariable("leptonPtRel",   lambda x : ptRel(x.leptons[0].p4(),x.p4()) if len(x.leptons) > 0 else -99, mcOnly=False, help="ptrel of the first associated lepton"),
+#    NTupleVariable("leptonPtRelInv",   lambda x : ptRel(x.p4(),x.leptons[0].p4()) if len(x.leptons) > 0 else -99, mcOnly=False, help="ptrel Run1 definition of the first associated lepton"),
+#    NTupleVariable("leptonDeltaR",   lambda x : deltaR(x.leptons[0].p4().eta(),x.leptons[0].p4().phi(),x.p4().eta(),x.p4().phi()) if len(x.leptons) > 0 else -99, mcOnly=False, help="deltaR of the first associated lepton"),
+#    NTupleVariable("leptonDeltaPhi",   lambda x : deltaPhi(x.leptons[0].p4().phi(),x.p4().phi()) if len(x.leptons) > 0 else 0, mcOnly=False, help="deltaPhi of the first associated lepton"),
+#    NTupleVariable("leptonDeltaEta",   lambda x : x.leptons[0].p4().eta()-x.p4().eta() if len(x.leptons) > 0 else 0, mcOnly=False, help="deltaEta of the first associated lepton"),
+#    NTupleVariable("vtxMass",   lambda x : x.userFloat("vtxMass"), mcOnly=False, help="vtxMass from btag"),
+#    NTupleVariable("vtxNtracks",   lambda x : x.userFloat("vtxNtracks"), mcOnly=False, help="number of tracks at vertex from btag"),
+#    NTupleVariable("vtxPt",   lambda x : sqrt(x.userFloat("vtxPx")**2 + x.userFloat("vtxPy")**2), mcOnly=False, help="pt of vertex from btag"),
+#    NTupleVariable("vtx3DSig",   lambda x : x.userFloat("vtx3DSig"), mcOnly=False, help="decay len significance of vertex from btag"),
+#    NTupleVariable("vtx3DVal",   lambda x : x.userFloat("vtx3DVal"), mcOnly=False, help="decay len of vertex from btag"),
+#    NTupleVariable("vtxPosX",   lambda x : x.userFloat("vtxPosX"), mcOnly=False, help="X coord of vertex from btag"),
+#    NTupleVariable("vtxPosY",   lambda x : x.userFloat("vtxPosY"), mcOnly=False, help="Y coord of vertex from btag"), 
+#    NTupleVariable("vtxPosZ",   lambda x : x.userFloat("vtxPosZ"), mcOnly=False, help="Z coord of vertex from btag"),
+#    NTupleVariable("pullVectorPhi", lambda x : getattr(x,"pullVectorPhi",-99), mcOnly=False, help="pull angle phi in the phi eta plane"),
+#    NTupleVariable("pullVectorMag", lambda x : getattr(x,"pullVectorMag",-99), mcOnly=False, help="pull angle magnitude"),
    # QG variables:
 # this computes for all
 #    NTupleVariable("qgl",   lambda x :x.qgl() , float, mcOnly=False,help="QG Likelihood"),
@@ -161,20 +161,20 @@ jetTypeVHbb = NTupleObjectType("jet",  baseObjectTypes = [ jetType ], variables 
     NTupleVariable("axis2",   lambda x : getattr(x,'axis2', -20) , float, mcOnly=False,help="QG input variable: axis2"),
     NTupleVariable("mult",   lambda x : getattr(x,'mult', -20) , int, mcOnly=False,help="QG input variable: total multiplicity"),
     NTupleVariable("numberOfDaughters",   lambda x : x.numberOfDaughters(), int, mcOnly=False,help="number of daughters"),
-    NTupleVariable("btagIdx",   lambda x : x.btagIdx, int, mcOnly=False,help="ranking in btag CSV"),
-    NTupleVariable("btagCmvaIdx",   lambda x : x.btagCmvaIdx, int, mcOnly=False,help="ranking in btag CMVA"),
+#    NTupleVariable("btagIdx",   lambda x : x.btagIdx, int, mcOnly=False,help="ranking in btag CSV"),
+#    NTupleVariable("btagCmvaIdx",   lambda x : x.btagCmvaIdx, int, mcOnly=False,help="ranking in btag CMVA"),
     NTupleVariable("mcIdx",   lambda x : x.mcJet.index if hasattr(x,"mcJet") and x.mcJet is not None else -1, int, mcOnly=False,help="index of the matching gen jet"),
     #NTupleVariable("pt_reg",lambda x : getattr(x,"pt_reg",-99), help="Regression"),
     #NTupleVariable("pt_regVBF",lambda x : getattr(x,"pt_regVBF",-99), help="Regression for VBF"),
-    NTupleVariable("blike_VBF",lambda x : getattr(x,"blike_VBF",-2), help="VBF blikelihood for SingleBtag dataset"),
-    NTupleVariable("pt_puppi",lambda x : puppiWeightedPt(x).pt(), help="pt of jet obtained reweighting the constituents with puppi weights"),
+#    NTupleVariable("blike_VBF",lambda x : getattr(x,"blike_VBF",-2), help="VBF blikelihood for SingleBtag dataset"),
+#    NTupleVariable("pt_puppi",lambda x : puppiWeightedPt(x).pt(), help="pt of jet obtained reweighting the constituents with puppi weights"),
  ])
 
 
 # "" is the nominal rgression, the other refer to JEC/JER up/down
-for analysis in ["","corrJECUp", "corrJECDown", "corrJERUp", "corrJERDown"]:
-    jetTypeVHbb.variables += [NTupleVariable("pt_reg"+("_"+analysis if analysis!="" else ""), lambda x, analysis=analysis : getattr(x,"pt_reg"+analysis,-99), help="Regression "+analysis)]
-    jetTypeVHbb.variables += [NTupleVariable("pt_regVBF"+("_"+analysis if analysis!="" else ""), lambda x, analysis=analysis : getattr(x,"pt_regVBF"+analysis,-99), help="Regressionfor VBF "+analysis)]
+#for analysis in ["","corrJECUp", "corrJECDown", "corrJERUp", "corrJERDown"]:
+#    jetTypeVHbb.variables += [NTupleVariable("pt_reg"+("_"+analysis if analysis!="" else ""), lambda x, analysis=analysis : getattr(x,"pt_reg"+analysis,-99), help="Regression "+analysis)]
+#    jetTypeVHbb.variables += [NTupleVariable("pt_regVBF"+("_"+analysis if analysis!="" else ""), lambda x, analysis=analysis : getattr(x,"pt_regVBF"+analysis,-99), help="Regressionfor VBF "+analysis)]
 
 
 #add per-jet b-tag systematic weight
@@ -204,21 +204,21 @@ jetTypeVHbb.variables += [NTupleVariable("bTagWeight",
 from VHbbAnalysis.Heppy.btagSF import btagSFhandle, get_SF
 from VHbbAnalysis.Heppy.btagSF import systematicsCSV, systematicsCMVAV2
 
-for algo in ["CSV", "CMVAV2"]:
-    for wp in [ "L", "M", "T" ]:
-        for syst in ["central", "up", "down"]:
-            syst_name = "" if syst=="central" else ("_"+syst) 
-            jetTypeVHbb.variables += [ NTupleVariable("btag"+algo+wp+"_SF"+syst_name,  lambda x, get_SF=get_SF, syst=syst, algo=algo, wp=wp, btagSFhandle=btagSFhandle : 
-                                                      get_SF(x.pt(), x.eta(), x.hadronFlavour(), 0.0, syst, algo, wp, False, btagSFhandle)
-                                                      , float, mcOnly=True, help="b-tag "+algo+wp+" POG scale factor, "+syst  )]
+#for algo in ["CSV", "CMVAV2"]:
+#    for wp in [ "L", "M", "T" ]:
+#        for syst in ["central", "up", "down"]:
+#            syst_name = "" if syst=="central" else ("_"+syst) 
+#            jetTypeVHbb.variables += [ NTupleVariable("btag"+algo+wp+"_SF"+syst_name,  lambda x, get_SF=get_SF, syst=syst, algo=algo, wp=wp, btagSFhandle=btagSFhandle : 
+#                                                      get_SF(x.pt(), x.eta(), x.hadronFlavour(), 0.0, syst, algo, wp, False, btagSFhandle)
+#                                                      , float, mcOnly=True, help="b-tag "+algo+wp+" POG scale factor, "+syst  )]
+#
+#    systematics = systematicsCSV if algo=="CSV" else systematicsCMVAV2
+#    for syst in systematics:
+#        syst_name = "" if syst=="central" else ("_"+syst) 
+#        jetTypeVHbb.variables += [ NTupleVariable("btagWeight"+algo+syst_name,  lambda x, get_SF=get_SF, syst=syst, algo=algo, wp=wp, btagSFhandle=btagSFhandle : 
+#                                                      get_SF(x.pt(), x.eta(), x.hadronFlavour(), (x.btag("pfCombinedInclusiveSecondaryVertexV2BJetTags") if algo=="CSV" else x.btag('pfCombinedMVAV2BJetTags')), syst, algo, wp, True, btagSFhandle)
+#                                                      , float, mcOnly=True, help="b-tag "+algo+" continuous POG scale factor, "+syst  )]
 
-    systematics = systematicsCSV if algo=="CSV" else systematicsCMVAV2
-    for syst in systematics:
-        syst_name = "" if syst=="central" else ("_"+syst) 
-        jetTypeVHbb.variables += [ NTupleVariable("btagWeight"+algo+syst_name,  lambda x, get_SF=get_SF, syst=syst, algo=algo, wp=wp, btagSFhandle=btagSFhandle : 
-                                                      get_SF(x.pt(), x.eta(), x.hadronFlavour(), (x.btag("pfCombinedInclusiveSecondaryVertexV2BJetTags") if algo=="CSV" else x.btag('pfCombinedMVAV2BJetTags')), syst, algo, wp, True, btagSFhandle)
-                                                      , float, mcOnly=True, help="b-tag "+algo+" continuous POG scale factor, "+syst  )]
-        
 #add per-lepton SF
 from leptonSF import LeptonSF
 
