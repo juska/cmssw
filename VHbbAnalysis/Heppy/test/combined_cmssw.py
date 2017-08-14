@@ -40,6 +40,14 @@ def initialize(**kwargs):
             fileNames = cms.untracked.vstring("file:///scratch/gregor/TTJets_MSDecaysCKM_central_Tune4C_13TeV_MiniAOD.root"),
             lumisToProcess = lumisToProcess
         )
+
+    #Drop high-memory LHE info
+    #only add back in case really needed
+    process.source.inputCommands = cms.untracked.vstring(
+       'keep *',
+       'drop LHERunInfoProduct_externalLHEProducer__LHE'
+    )
+
     process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
     process.OUT = cms.OutputModule("PoolOutputModule",
@@ -601,14 +609,14 @@ def initialize(**kwargs):
         )
         process.OUT.outputCommands.append('keep *_myGenerator_*_EX')
         
-        process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
-          HepMCCollection = cms.InputTag('myGenerator','unsmeared'),
-          GenEventInfo = cms.InputTag('generator'),
-          LHEEventInfo = cms.InputTag('externalLHEProducer'),
-          LHERunInfo = cms.InputTag('externalLHEProducer'),
-          ProductionMode = cms.string('AUTO'),
-        )
-        process.OUT.outputCommands.append('keep *_rivetProducerHTXS_*_EX')
+        # process.rivetProducerHTXS = cms.EDProducer('HTXSRivetProducer',
+        #   HepMCCollection = cms.InputTag('myGenerator','unsmeared'),
+        #   GenEventInfo = cms.InputTag('generator'),
+        #   LHEEventInfo = cms.InputTag('externalLHEProducer'),
+        #   LHERunInfo = cms.InputTag('externalLHEProducer'),
+        #   ProductionMode = cms.string('AUTO'),
+        # )
+        # process.OUT.outputCommands.append('keep *_rivetProducerHTXS_*_EX')
 
         process.PDFWeightsProducer = cms.EDProducer("PDFWeightsProducer",
           # mc2hessianCSV = cms.FileInPath('PhysicsTools/HepMCCandAlgos/data/NNPDF30_lo_as_0130_hessian_60.csv'), #MC2Hessian transformation matrix
