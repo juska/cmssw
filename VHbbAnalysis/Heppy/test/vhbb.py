@@ -307,6 +307,8 @@ JetAna.jecPath=os.environ['CMSSW_BASE']+"/src/VHbbAnalysis/Heppy/data/jec"
 #JetAna.mcGT="Fall15_25nsV2_MC"
 #JetAna.dataGT = "Fall15_25nsV2_DATA"
 
+from VHbbAnalysis.Heppy.CountAnalyzer import CountAnalyzer
+
 JetAna.mcGT="Summer16_23Sep2016V4_MC"
 JetAna.dataGT="Summer16_23Sep2016BCDV4_DATA"
 JetAna.addJECShifts=True
@@ -431,6 +433,10 @@ trigemu = cfg.Analyzer(
     slMuSelection = lambda x : x.pt() > 25 and x.muonID("POG_ID_Tight") and mu_pfRelIso04(x) < 0.15,
     dlEleSelection = lambda x : x.pt() > 15 and getattr(x,"mvaIdSpring16GeneralPurposePOG80",False) and ele_mvaEleID_Trig_preselection(x),
     dlMuSelection = lambda x : x.pt() > 15 and x.muonID("POG_ID_Loose") and mu_pfRelIso04(x) < 0.25,
+)
+
+counter = cfg.Analyzer(
+    class_object=CountAnalyzer,
 )
 
 VHbb = cfg.Analyzer(
@@ -579,6 +585,7 @@ sequence = [
     METAna,
     #METPuppiAna,
     PdfAna,
+    counter,
     #VHbb,TTHtoTauTau,TTHtoTauTauGen,
     TriggerObjectsAna,L1TriggerAna,trigemu,filterAna,treeProducer
 ]
