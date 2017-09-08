@@ -232,11 +232,11 @@ class GeneratorAnalyzer( Analyzer ):
         event.vh_genallstatus2bhadrons = [ p for p in event.genParticles if p.status() ==2 and self.hasBottom(p.pdgId()) ]
         event.vh_genallcquarks = [ p for p in event.genParticles if abs(p.pdgId()) == 4 and ( p.numberOfDaughters() == 0 or abs(p.daughter(0).pdgId()) != 4) ]
         event.vh_gengluonfromt = sorted(
-            [p for p in event.genParticles if abs(p.pdgId()) == 21 and (abs(p.mother(0).pdgId()) == 6)],
+            [p for p in event.genParticles if abs(p.pdgId()) == 21 and p.numberOfMothers()>0 and (abs(p.mother(0).pdgId()) == 6)],
             key=lambda x: x.p4().Pt(), reverse=True
         )
         event.vh_gengluonfromb = sorted(
-            [p for p in event.genParticles if abs(p.pdgId()) == 21 and (abs(p.mother(0).pdgId()) == 5)],
+            [p for p in event.genParticles if abs(p.pdgId()) == 21 and p.numberOfMothers()>0 and (abs(p.mother(0).pdgId()) == 5)],
             key=lambda x: x.p4().Pt(), reverse=True
         )
         event.vh_gengluonfromt = filter(lambda x: x.p4().Pt>20, event.vh_gengluonfromt)
