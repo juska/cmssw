@@ -9,7 +9,19 @@ class BTagSFHandle:
     
 btagSFhandle=BTagSFHandle()
 
-systematicsCSV = ["central", "up_jesAbsoluteMPFBias", "down_jesAbsoluteMPFBias", "up_jesAbsoluteScale", "down_jesAbsoluteScale", "up_jesFlavorQCD", "down_jesFlavorQCD", "up_jesPileUpDataMC", "down_jesPileUpDataMC", "up_jesPileUpPtBB", "down_jesPileUpPtBB", "up_jesPileUpPtEC1", "down_jesPileUpPtEC1", "up_jesPileUpPtRef", "down_jesPileUpPtRef", "up_jesRelativeFSR", "down_jesRelativeFSR", "up_jesSinglePionECAL", "down_jesSinglePionECAL", "up_jesSinglePionHCAL", "down_jesSinglePionHCAL", "up_jesTimePtEta", "down_jesTimePtEta", "up_jes", "down_jes", "up_lf", "down_lf", "up_hf", "down_hf", "up_hfstats1", "down_hfstats1", "up_hfstats2", "down_hfstats2", "up_lfstats1", "down_lfstats1", "up_lfstats2", "down_lfstats2", "up_cferr1", "down_cferr1", "up_cferr2", "down_cferr2"]
+systematicsCSV = [
+    "central",
+#"up_jesAbsoluteMPFBias", "down_jesAbsoluteMPFBias", "up_jesAbsoluteScale", "down_jesAbsoluteScale", "up_jesFlavorQCD", "down_jesFlavorQCD", "up_jesPileUpDataMC", "down_jesPileUpDataMC", "up_jesPileUpPtBB", "down_jesPileUpPtBB", "up_jesPileUpPtEC1", "down_jesPileUpPtEC1", "up_jesPileUpPtRef", "down_jesPileUpPtRef", "up_jesRelativeFSR", "down_jesRelativeFSR", "up_jesSinglePionECAL", "down_jesSinglePionECAL", "up_jesSinglePionHCAL", "down_jesSinglePionHCAL", "up_jesTimePtEta", "down_jesTimePtEta",
+    "up_jes", "down_jes",
+    "up_lf", "down_lf",
+    "up_hf", "down_hf",
+    "up_hfstats1", "down_hfstats1",
+    "up_hfstats2", "down_hfstats2",
+    "up_lfstats1", "down_lfstats1",
+    "up_lfstats2", "down_lfstats2",
+    "up_cferr1", "down_cferr1",
+    "up_cferr2", "down_cferr2"
+]
 
 systematicsCMVAV2 = ["central", "up_jes", "down_jes", "up_lf", "down_lf", "up_hf", "down_hf", "up_hfstats1", "down_hfstats1", "up_hfstats2", "down_hfstats2", "up_lfstats1", "down_lfstats1", "up_lfstats2", "down_lfstats2", "up_cferr1", "down_cferr1", "up_cferr2", "down_cferr2"]
 
@@ -17,16 +29,19 @@ def initBTagSF () :
 # load the BTagCalibrationStandalone.cc macro from https://twiki.cern.ch/twiki/bin/view/CMS/BTagCalibration
     btagSFhandle.initialized=True
     csvpath = os.environ['CMSSW_BASE']+"/src/VHbbAnalysis/Heppy/data/csv/"
+    print "Loading BTagCalibrationStandalone.so"
     ROOT.gSystem.Load(csvpath+'/BTagCalibrationStandalone.so')
 
+    print "Loading WP calibrations"
 # CSVv2
     btagSFhandle.calib_csv = ROOT.BTagCalibration("csvv2", csvpath+"/CSVv2_ichep.csv")
 
 # cMVAv2
     btagSFhandle.calib_cmva = ROOT.BTagCalibration("cmvav2", csvpath+"/cMVAv2_ichep.csv")
 
+    print "Loading shape calibrations"
 # CSVv2
-    btagSFhandle.calib_csv_reweight = ROOT.BTagCalibration("csvv2", csvpath+"/ttH_BTV_CSVv2_13TeV_2016All_2017_dsalerno.csv")   
+    btagSFhandle.calib_csv_reweight = ROOT.BTagCalibration("csvv2", csvpath+"/ttH_BTV_CSVv2_13TeV_2016All_2017_3_30.csv")   
 # cMVAv2
     btagSFhandle.calib_cmva_reweight = ROOT.BTagCalibration("cmvav2", csvpath+"/ttH_BTV_cMVAv2_13TeV_2016All_2017_3_30.csv")
 
