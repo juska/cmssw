@@ -30,11 +30,11 @@ NTHREADS=4
 cmsDriver.py step3  --runUnscheduled  --conditions $CONDITIONS -s RAW2DIGI,L1Reco,RECO,RECOSIM,EI,PAT --datatier RECOSIM,AODSIM,MINIAODSIM --nThreads $NTHREADS -n $N --era $ERA --eventcontent RECOSIM,AODSIM,MINIAODSIM --filein file:$INPUT_FILE --fileout file:step3.root > step3.log  2>&1
 
 #NanoAOD
-#Can be skipped if doing DQM directly from RECO
 #On lxplus, this step takes about 1 minute / 1000 events
+#Can be skipped if doing DQM directly from RECO
 #cmsDriver.py step4 --conditions $CONDITIONS -s NANO --datatier NANOAODSIM --nThreads $NTHREADS -n $N --era $ERA --eventcontent NANOAODSIM --filein file:step3_inMINIAODSIM.root --fileout file:step4.root > step4.log 2>&1
 
 cmsDriver.py step5 --conditions $CONDITIONS -s DQM:@pfDQM --datatier DQMIO --nThreads $NTHREADS -n $N --era $ERA --eventcontent DQM --filein file:step3.root --fileout file:step5.root > step5.log 2>&1
 
-#Harvesting seems not to be needed
-#cmsDriver.py step6 --conditions $CONDITIONS -s HARVESTING --era $ERA --filetype DQM --filein file:step5.root --fileout file:step6.root > step6.log 2>&1
+#Harvesting converts the histograms stored in TTrees to be stored in folders by run etc
+cmsDriver.py step6 --conditions $CONDITIONS -s HARVESTING:@pfDQM --era $ERA --filetype DQM --filein file:step5.root --fileout file:step6.root > step6.log 2>&1
