@@ -182,6 +182,10 @@ phase2_hcal.toReplaceWith( PostDQMOfflineMiniAOD, PostDQMOfflineMiniAOD.copyAndE
     pfMetDQMAnalyzerMiniAOD, pfPuppiMetDQMAnalyzerMiniAOD # No hcalnoise yet
 ]))
 
+from Validation.RecoParticleFlow.particleFlowDQM_cff import pfDQM
+from Validation.RecoParticleFlow.PFJetValidation_cff import pfJetValidation1, pfJetValidation2 
+from Validation.RecoParticleFlow.PFJetResValidation_cff import pfJetResValidation1
+DQMOfflinePF = cms.Sequence(pfDQM + pfJetValidation1 + pfJetValidation2 + pfJetResValidation1)
 
 from PhysicsTools.NanoAOD.nanoDQM_cff import nanoDQM
 DQMOfflineNanoAOD = cms.Sequence(nanoDQM)
