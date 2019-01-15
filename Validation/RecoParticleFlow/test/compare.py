@@ -12,17 +12,26 @@ from Validation.RecoTrack.plotting.plotting import Subtract, FakeDuplicate, CutE
 from Validation.RecoTrack.plotting.html import PlotPurpose
 
 outputDir = "plots" # Plot output directory
-description = "Short description of your comparison"
+description = "Simple ParticleFlow comparison"
 
 plotterDrawArgs = dict(
     separate=False, # Set to true if you want each plot in it's own canvas
 #    ratio=False,   # Uncomment to disable ratio pad
 )
 
+if len(sys.argv) != 3:
+    print "Usage: compare.py path1 path2"
+    print "where path1 and path2 are the folders that contain the [TTBar|QCD|ZMM]/DQM*.root output of 'make all'"
+    sys.exit(0)
+
+#paths to the relval runs
+path1 = sys.argv[1]
+path2 = sys.argv[2]
+
 # Pairs of file names and legend labels
 filesLabels = [
-    ("tmp/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
-    ("tmp/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
+    (path1 + "/TTbar/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
+    (path2 + "/TTbar/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
 ]
 # Files are grouped together as a "sample" (the files don't
 # necessarily have to come from the same sample, like ttbar, but this
@@ -32,19 +41,19 @@ sample1 = SimpleSample("RelVal_TTbar13", # Prefix for subdirectory names
                       filesLabels)     # Files and legend labels
 
 filesLabels = [
-    ("tmp2/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
-    ("tmp2/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
+    (path1 + "/QCD/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
+    (path2 + "/QCD/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
 ]
 sample2 = SimpleSample("RelVal_QCD", # Prefix for subdirectory names
                       "RelVal_QCD",   # The name appears in the HTML pages
                       filesLabels)     # Files and legend labels
 
 filesLabels = [
-    ("tmp3/Zmm/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
-    ("tmp3/Zmm/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
+    (path1 + "/ZMM/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 1"),
+    (path2 + "/ZMM/DQM_V0001_R000000001__Global__CMSSW_X_Y_Z__RECO.root", "Option 2"),
 ]
-sample3 = SimpleSample("RelVal_Zmm", # Prefix for subdirectory names
-                      "RelVal_Zmm",   # The name appears in the HTML pages
+sample3 = SimpleSample("RelVal_ZMM", # Prefix for subdirectory names
+                      "RelVal_ZMM",   # The name appears in the HTML pages
                       filesLabels)     # Files and legend labels
 
 # You can produce plots for multiple samples on one. Just construct
@@ -53,79 +62,22 @@ sample3 = SimpleSample("RelVal_Zmm", # Prefix for subdirectory names
 samples = [
     sample1,
     sample2,
-#    sample3
+    sample3
 ]
+
+def addPlots(plotter, folder, name, section, bin_range):
+    folders = [folder]
+    plots = [PlotGroup(name, [Plot("Bin{0}".format(ibin)) for ibin in bin_range])]
+    plotter.append("ParticleFlow", folders, PlotFolder(*plots, loopSubFolders=False, page="pf", section=section))
 
 plotter = Plotter()
 
+addPlots(plotter, "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetPt", "ByGenJetPt1", "JetResponse", range(0,6))
+addPlots(plotter, "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetPt", "ByGenJetPt2", "JetResponse", range(6,12))
 
-folder = [
-    "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetPt",
-]
-plots = [
-    PlotGroup("ByGenJetPt1", [
-        Plot("Bin0"),
-        Plot("Bin1"),
-        Plot("Bin2"),
-        Plot("Bin3"),
-        Plot("Bin4"),
-        Plot("Bin5"),
-    ])
-]
-plotter.append("ParticleFlow", folder, PlotFolder(*plots, loopSubFolders=False, page="pf", section="JetResponse"))
-
-plots = [
-    PlotGroup("ByGenJetPt2", [
-        Plot("Bin6"),
-        Plot("Bin7"),
-        Plot("Bin8"),
-        Plot("Bin9"),
-        Plot("Bin10"),
-        Plot("Bin11"),
-    ])
-]
-plotter.append("ParticleFlow", folder, PlotFolder(*plots, loopSubFolders=False, page="pf", section="JetResponse"))
-
-
-
-folder = [
-    "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetEta",
-]
-plots = [
-    PlotGroup("ByGenJetEta1", [
-        Plot("Bin0"),
-        Plot("Bin1"),
-        Plot("Bin2"),
-        Plot("Bin3"),
-        Plot("Bin4"),
-        Plot("Bin5"),
-    ])
-]
-plotter.append("ParticleFlow", folder, PlotFolder(*plots, loopSubFolders=False, page="pf", section="JetResponse"))
-
-
-plots = [
-    PlotGroup("ByGenJetEta2", [
-        Plot("Bin6"),
-        Plot("Bin7"),
-        Plot("Bin8"),
-        Plot("Bin9"),
-        Plot("Bin10"),
-        Plot("Bin11"),
-    ])
-]
-plotter.append("ParticleFlow", folder, PlotFolder(*plots, loopSubFolders=False, page="pf", section="JetResponse"))
-
-
-
-plots = [
-    PlotGroup("ByGenJetEta3", [
-        Plot("Bin12"),
-    ])
-]
-plotter.append("ParticleFlow", folder, PlotFolder(*plots, loopSubFolders=False, page="pf", section="JetResponse"))
-
-
+addPlots(plotter, "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetEta", "ByGenJetEta1", "JetResponse", range(0,6))
+addPlots(plotter, "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetEta", "ByGenJetEta2", "JetResponse", range(6,12))
+addPlots(plotter, "DQMData/Run 1/Physics/Run summary/JetResponse/ByGenJetEta", "ByGenJetEta3", "JetResponse", range(12,13))
 
 val = SimpleValidation(samples, outputDir)
 report = val.createHtmlReport(validationName=description)
