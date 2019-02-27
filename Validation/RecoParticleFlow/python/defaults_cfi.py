@@ -8,3 +8,7 @@ def response_distribution_name(iptbin, ietabin):
     #convert 0.5 -> "05"
     eta_string = "{0:.1f}".format(etabins[ietabin+1]).replace(".", "")
     return "reso_dist_{0:.0f}_{1:.0f}_eta{2}".format(ptbins[iptbin], ptbins[iptbin+1], eta_string)
+
+def genjet_distribution_name(ietabin):
+    eta_string = "{0:.1f}".format(etabins[ietabin+1]).replace(".", "")
+    return "genjet_pt_eta{0}".format(eta_string)
