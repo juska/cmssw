@@ -60,7 +60,8 @@ MinBias_post:
 	cd ${TMPDIR}/MinBias && python ${CMSSW_BASE}/src/Validation/RecoParticleFlow/test/addResponseAndResolution.py DQM*.root
 	hadd -f ${TMPDIR}/MinBias/DQMTotal.root ${TMPDIR}/MinBias/DQM_*.root
 
-.PHONY: plots # Enable re-running plots 
+
+.PHONY: plots # Enable re-running plots
 plots:
 	rm -Rf plots	
 	python test/compare.py \
